@@ -33,11 +33,11 @@
   .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
   #shareBtn{color:var(--ink)}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:22px}
-  .card{position:relative;display:flex;flex-direction:column;background:#fff;border-radius:16px;overflow:hidden;cursor:pointer;
+  .card{position:relative;display:flex;flex-direction:column;background:#fff;border-radius:16px;overflow:hidden;cursor:pointer;height:330px;
     box-shadow:0 1px 3px rgba(0,0,0,.05),0 8px 22px rgba(0,0,0,.06);transition:transform .2s ease,box-shadow .2s ease}
   .card:hover{transform:translateY(-4px);box-shadow:0 14px 32px rgba(0,0,0,.13)}
   .card.picked{box-shadow:0 0 0 2px var(--purple),0 8px 22px rgba(0,0,0,.10)}
-  .imgwrap{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;background:#fff;padding:22px}
+  .imgwrap{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;background:#fff;padding:22px}
   .imgwrap img{max-width:100%;max-height:100%;object-fit:contain}
   .pill{position:absolute;top:12px;left:12px;font-size:11px;font-weight:600;letter-spacing:.04em;
     text-transform:uppercase;padding:4px 9px;border-radius:999px;color:#fff;z-index:3}
@@ -48,7 +48,7 @@
     font-size:11px;font-weight:600;color:#fff;border:2px solid #fff;box-sizing:border-box}
   .tagdot.more{background:#5f5e5a}
   .cap{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:14px 15px;
-    border-top:1px solid var(--line);min-height:62px}
+    border-top:1px solid var(--line)}
   .cap .nm{font-size:14.5px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
   .cap .pr{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;padding-top:1px}
   .overlay{position:absolute;left:0;right:0;top:0;bottom:0;
