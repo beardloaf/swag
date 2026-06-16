@@ -91,7 +91,7 @@
     <div class="participants" id="participants"></div>
     <button class="chip" id="shareBtn">Copy share link</button>
   </div>
-  <p class="hint">Tip: your picks are saved in this browser and encoded in the share link — send it around so everyone can add theirs.</p>
+  <p class="hint">Live shared board — add your name, then click tiles to tag. Everyone's picks sync automatically; just send the link. <span id="syncStatus" style="font-weight:600"></span></p>
 
   <div class="bar" id="bar">
     <button class="chip on" data-f="all">All 40</button>
@@ -466,35 +466,32 @@
   </div>
 
   <footer>
-    Prices are ballpark current retail and exclude branding/bulk discounts — most of these brands run corporate gifting programs (and services like Reachdesk, Sendoso or SwagUp can warehouse &amp; ship on demand). Your tags are saved in this browser and travel inside the “Copy share link” URL. Curated with an Uncrate / Gear Patrol / Huckberry sensibility.
+    Prices are ballpark current retail and exclude branding/bulk discounts — most of these brands run corporate gifting programs (and services like Reachdesk, Sendoso or SwagUp can warehouse &amp; ship on demand). Everyone's tags sync live to a shared store, so just send the link — no logins. Curated with an Uncrate / Gear Patrol / Huckberry sensibility.
   </footer>
 </div>
 
 <script>
 (function(){
-  var KEY='swag-board-v1';
+  var STORE='https://api.restful-api.dev/objects/ff8081819d82fab6019ed29b502a219f';
+  var ME_KEY='swag-me';
   var PALETTE=['#e24b4a','#185fa5','#0f6e56','#b8731a','#534ab7','#993556','#1d9e75','#d85a30','#0c447c','#444441'];
-  var state={me:null,users:{},picks:{}};
+  var state={users:{},picks:{}};
+  var me=null; try{me=localStorage.getItem(ME_KEY)||null;}catch(e){}
+  var pending=0; var chain=Promise.resolve();
 
   function initials(n){var p=n.trim().split(/\s+/);var s=(p[0]?p[0][0]:'')+(p[1]?p[1][0]:'');if(!p[1]&&p[0])s=p[0].slice(0,2);return s.toUpperCase();}
   function colorFor(n){var h=0;for(var i=0;i<n.length;i++){h=(h*31+n.charCodeAt(i))>>>0;}return PALETTE[h%PALETTE.length];}
   function ensureUser(n){if(!state.users[n])state.users[n]={i:initials(n),c:colorFor(n)};return state.users[n];}
+  function setStatus(ok){var el=document.getElementById('syncStatus');if(!el)return;el.textContent=ok?'● live':'● offline — retrying';el.style.color=ok?'#1d9e75':'#b8731a';}
 
-  function encodeState(){return 'b='+encodeURIComponent(JSON.stringify({u:state.users,p:state.picks}));}
-  function pushURL(){try{history.replaceState(null,'','#'+encodeState());}catch(e){}}
-  function readHash(){var m=(location.hash||'').match(/b=([^&]+)/);if(!m)return null;try{return JSON.parse(decodeURIComponent(m[1]));}catch(e){return null;}}
-
-  function load(){
-    var saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||'{}');}catch(e){}
-    state.users=saved.users||{};state.picks=saved.picks||{};state.me=saved.me||null;
-    var h=readHash();
-    if(h){
-      var u=h.u||{};for(var n in u){if(!state.users[n])state.users[n]=u[n];}
-      var p=h.p||{};
-      for(var id in p){var arr=state.picks[id]||[];(p[id]||[]).forEach(function(name){if(arr.indexOf(name)<0)arr.push(name);});state.picks[id]=arr;}
-    }
+  function getRemote(){
+    return fetch(STORE,{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();})
+      .then(function(o){var d=(o&&o.data)||{};return {users:d.users||{},picks:d.picks||{}};});
   }
-  function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}pushURL();}
+  function putRemote(data){
+    return fetch(STORE,{method:'PUT',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name:'engine-swag-board',data:data})}).then(function(r){if(!r.ok)throw 0;return r.json();});
+  }
 
   function renderCard(id){
     var card=document.querySelector('.card[data-id="'+id+'"]');if(!card)return;
@@ -502,10 +499,9 @@
     arr.slice(0,5).forEach(function(n){var u=state.users[n]||{i:initials(n),c:colorFor(n)};
       var d=document.createElement('span');d.className='tagdot';d.style.background=u.c;d.textContent=u.i;d.title=n;box.appendChild(d);});
     if(arr.length>5){var more=document.createElement('span');more.className='tagdot more';more.textContent='+'+(arr.length-5);box.appendChild(more);}
-    card.classList.toggle('picked', !!state.me && arr.indexOf(state.me)>=0);
+    card.classList.toggle('picked', !!me && arr.indexOf(me)>=0);
   }
   function renderAll(){document.querySelectorAll('.card').forEach(function(c){renderCard(c.getAttribute('data-id'));});}
-
   function renderParticipants(){
     var el=document.getElementById('participants');el.innerHTML='';
     Object.keys(state.users).forEach(function(n){
@@ -515,38 +511,55 @@
       el.appendChild(chip);
     });
   }
+  function renderMe(){var md=document.getElementById('meDot');if(me){var u=state.users[me]||{i:initials(me),c:colorFor(me)};md.style.background=u.c;md.textContent=u.i;}else{md.style.background='#b4b2a9';md.textContent='';}}
+  function renderUI(){renderAll();renderParticipants();renderMe();}
+
+  function commit(mutate){
+    pending++;
+    chain=chain.then(function(){
+      return getRemote().then(function(remote){state=remote;mutate();return putRemote(state);})
+        .then(function(){setStatus(true);},function(){setStatus(false);});
+    }).then(function(){pending--;renderUI();});
+    return chain;
+  }
 
   function setMe(name){
-    name=(name||'').trim();if(!name)return;
-    state.me=name;var u=ensureUser(name);
-    var dot=document.getElementById('meDot');dot.style.background=u.c;dot.textContent=u.i;
-    save();renderAll();renderParticipants();
+    name=(name||'').trim();if(!name)return;me=name;try{localStorage.setItem(ME_KEY,me);}catch(e){}
+    ensureUser(me);renderMe();
+    commit(function(){ensureUser(me);});
   }
-
   function toggle(id){
-    if(!state.me){var inp=document.getElementById('nameInput');inp.focus();inp.classList.add('flash');setTimeout(function(){inp.classList.remove('flash');},900);return;}
-    var arr=state.picks[id]||[];var i=arr.indexOf(state.me);
-    if(i>=0)arr.splice(i,1);else arr.push(state.me);
-    state.picks[id]=arr;save();renderCard(id);renderParticipants();
+    if(!me){var inp=document.getElementById('nameInput');inp.focus();inp.classList.add('flash');setTimeout(function(){inp.classList.remove('flash');},900);return;}
+    ensureUser(me);
+    var arr=state.picks[id]||[];var had=arr.indexOf(me)>=0;
+    if(had)arr.splice(arr.indexOf(me),1);else arr.push(me);
+    state.picks[id]=arr;renderCard(id);renderParticipants();
+    var want=!had;
+    commit(function(){
+      ensureUser(me);
+      var a=state.picks[id]||[];var j=a.indexOf(me);
+      if(want&&j<0)a.push(me); if(!want&&j>=0)a.splice(j,1);
+      state.picks[id]=a;
+    });
   }
+  function poll(){ if(pending>0)return;
+    getRemote().then(function(remote){if(pending>0)return;state=remote;setStatus(true);renderUI();},function(){setStatus(false);}); }
 
-  load();
   var nameInput=document.getElementById('nameInput');
-  if(state.me){nameInput.value=state.me;var u=ensureUser(state.me);var md=document.getElementById('meDot');md.style.background=u.c;md.textContent=u.i;}
+  if(me)nameInput.value=me;
   nameInput.addEventListener('change',function(){setMe(this.value);});
   nameInput.addEventListener('keydown',function(e){if(e.key==='Enter'){setMe(this.value);this.blur();}});
 
   document.getElementById('shareBtn').addEventListener('click',function(){
-    pushURL();var btn=this;var txt=btn.textContent;
+    var btn=this;var txt=btn.textContent;var url=location.href.split('#')[0];
     var done=function(){btn.textContent='Link copied ✓';setTimeout(function(){btn.textContent=txt;},1500);};
-    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(location.href).then(done,function(){prompt('Copy this link:',location.href);});}
-    else{prompt('Copy this link:',location.href);}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(done,function(){prompt('Copy this link:',url);});}
+    else{prompt('Copy this link:',url);}
   });
 
   document.querySelectorAll('.card').forEach(function(card){
     card.addEventListener('click',function(e){if(e.target.closest('a'))return;toggle(card.getAttribute('data-id'));});
   });
-
   var chips=document.querySelectorAll('#bar .chip[data-f]');
   var cards=document.querySelectorAll('#grid .card');
   chips.forEach(function(c){c.addEventListener('click',function(){
@@ -555,7 +568,9 @@
     cards.forEach(function(card){card.classList.toggle('hide', !(f==='all'||card.getAttribute('data-tier')===f));});
   });});
 
-  save();renderAll();renderParticipants();
+  renderUI();
+  getRemote().then(function(remote){state=remote;setStatus(true);renderUI();},function(){setStatus(false);});
+  setInterval(poll, 7000);
 })();
 </script>
 </body>
