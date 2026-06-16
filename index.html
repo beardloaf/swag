@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Swag &amp; Anniversary Gifts — Contact Sheet</title>
+<title>Engine Merch Explore</title>
 <style>
   :root{
-    --paper:#f3f1ea; --ink:#1b1b19; --muted:#6c6a62; --line:rgba(0,0,0,.10);
+    --paper:#ffffff; --ink:#1b1b19; --muted:#6c6a62; --line:rgba(0,0,0,.10);
     --teal:#0f6e56; --blue:#185fa5; --amber:#b8731a; --purple:#534ab7;
   }
   *{box-sizing:border-box}
@@ -16,8 +16,6 @@
   .wrap{max-width:1240px;margin:0 auto;padding:40px 28px 64px}
   header h1{font-size:30px;font-weight:600;letter-spacing:-.02em;margin:0 0 6px}
   header p{margin:0;color:var(--muted);font-size:15px;max-width:720px}
-  .meta{margin-top:14px;font-size:13px;color:var(--muted);display:flex;gap:18px;flex-wrap:wrap}
-  .meta b{color:var(--ink);font-weight:600}
   .panel{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin:24px 0 6px}
   .me{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
   #nameInput{font-size:14px;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;min-width:170px}
@@ -34,12 +32,11 @@
   .chip:hover{border-color:rgba(0,0,0,.25)}
   .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
   #shareBtn{color:var(--ink)}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:20px}
-  .card{position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);
-    border-radius:16px;overflow:hidden;cursor:pointer;
-    transition:transform .2s ease,box-shadow .2s ease}
-  .card:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(0,0,0,.14)}
-  .card.picked{box-shadow:0 0 0 2px var(--purple),0 16px 36px rgba(0,0,0,.14)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:22px}
+  .card{position:relative;display:flex;flex-direction:column;background:#fff;border-radius:16px;overflow:hidden;cursor:pointer;
+    box-shadow:0 1px 3px rgba(0,0,0,.05),0 8px 22px rgba(0,0,0,.06);transition:transform .2s ease,box-shadow .2s ease}
+  .card:hover{transform:translateY(-4px);box-shadow:0 14px 32px rgba(0,0,0,.13)}
+  .card.picked{box-shadow:0 0 0 2px var(--purple),0 8px 22px rgba(0,0,0,.10)}
   .imgwrap{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;background:#fff;padding:22px}
   .imgwrap img{max-width:100%;max-height:100%;object-fit:contain}
   .pill{position:absolute;top:12px;left:12px;font-size:11px;font-weight:600;letter-spacing:.04em;
@@ -48,11 +45,12 @@
   .t-travel{background:var(--amber)} .t-milestone{background:var(--purple)}
   .tags{position:absolute;top:10px;right:10px;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:62%;z-index:4}
   .tagdot{width:25px;height:25px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
-    font-size:11px;font-weight:600;color:#fff;border:2px solid var(--paper);box-sizing:border-box}
+    font-size:11px;font-weight:600;color:#fff;border:2px solid #fff;box-sizing:border-box}
   .tagdot.more{background:#5f5e5a}
-  .cap{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:13px 15px;border-top:1px solid var(--line)}
-  .cap .nm{font-size:14.5px;font-weight:600;letter-spacing:-.01em}
-  .cap .pr{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .cap{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:14px 15px;
+    border-top:1px solid var(--line);min-height:62px}
+  .cap .nm{font-size:14.5px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
+  .cap .pr{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;padding-top:1px}
   .overlay{position:absolute;left:0;right:0;top:0;bottom:0;
     background:linear-gradient(180deg,rgba(18,18,17,.30) 0%,rgba(18,18,17,.92) 64%);
     color:#fff;opacity:0;transition:opacity .22s ease;
@@ -65,21 +63,14 @@
   .overlay .cat{font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border:1px solid rgba(255,255,255,.4);border-radius:999px}
   .overlay .view{font-size:13px;font-weight:600;color:#fff;text-decoration:none;white-space:nowrap}
   .overlay .view:hover{text-decoration:underline}
-  footer{margin-top:42px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);line-height:1.6}
   .hide{display:none !important}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1>Swag &amp; anniversary gifts</h1>
-    <p>Design-forward objects that go beyond the tee and tote — curated with an Uncrate / cool-hunting eye. Add your name, then click any tile to tag what you're excited about. Hover for the pitch; “View →” opens the store page.</p>
-    <div class="meta">
-      <span><b>40</b> objects</span>
-      <span>Ceiling <b>$1,000</b></span>
-      <span><b>4</b> tiers · everyday · elevated · travel · milestone</span>
-      <span>Prices are ballpark retail</span>
-    </div>
+    <h1>Engine Merch Explore</h1>
+    <p>Employee swag &amp; anniversary gifts that go beyond the tee and tote.</p>
   </header>
 
   <div class="panel">
@@ -94,302 +85,14 @@
   <p class="hint">Live shared board — add your name, then click tiles to tag. Everyone's picks sync automatically; just send the link. <span id="syncStatus" style="font-weight:600"></span></p>
 
   <div class="bar" id="bar">
-    <button class="chip on" data-f="all">All 40</button>
-    <button class="chip" data-f="everyday">Everyday · $30–95</button>
+    <button class="chip on" data-f="all">All 32</button>
+    <button class="chip" data-f="milestone">Milestone · $349–760</button>
     <button class="chip" data-f="elevated">Elevated · $99–249</button>
     <button class="chip" data-f="travel">Travel · beyond bags</button>
-    <button class="chip" data-f="milestone">Milestone · $349–760</button>
+    <button class="chip" data-f="everyday">Everyday · $30–95</button>
   </div>
 
   <div class="grid" id="grid">
-
-    <div class="card" data-id="snowpeak-mug" data-tier="everyday">
-      <span class="pill t-everyday">Everyday</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://www.snowpeak.com/cdn/shop/products/mg-143_alt_02_600x600.jpg?v=1642437764" alt="Snow Peak titanium mug"></div>
-      <div class="cap"><span class="nm">Snow Peak Ti-Single 450</span><span class="pr">$59</span></div>
-      <div class="overlay"><span class="vd">Snow Peak</span><span class="nm2">Ti-Single 450 mug</span>
-        <span class="why">Indestructible Japanese titanium that packs flat — laser-etch the logo on the base.</span>
-        <span class="row"><span class="cat">Drinkware</span><a class="view" href="https://www.snowpeak.com/products/titanium-single-450-cup-mg-043" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="fellow-carter" data-tier="everyday">
-      <span class="pill t-everyday">Everyday</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://fellowproducts.com/cdn/shop/files/Web_PDP_CarterMoveMug-16oz_Sienna_2.png?v=1774035954" alt="Fellow Carter Move mug"></div>
-      <div class="cap"><span class="nm">Fellow Carter Move</span><span class="pr">$39</span></div>
-      <div class="overlay"><span class="vd">Fellow</span><span class="nm2">Carter Move mug</span>
-        <span class="why">Design-award travel mug with a ceramic interior, so coffee still tastes like coffee.</span>
-        <span class="row"><span class="cat">Drinkware</span><a class="view" href="https://fellowproducts.com/products/carter-move-mug" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="areaware-puzzle" data-tier="everyday">
-      <span class="pill t-everyday">Everyday</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://www.areaware.com/cdn/shop/files/GradientPuzzle-Group-Silo-BWGP.jpg?v=1738810510" alt="Areaware Gradient Puzzle"></div>
-      <div class="cap"><span class="nm">Areaware Gradient Puzzle</span><span class="pr">$36</span></div>
-      <div class="overlay"><span class="vd">Areaware</span><span class="nm2">Gradient Puzzle</span>
-        <span class="why">A design object disguised as a puzzle — earns a permanent spot on the desk.</span>
-        <span class="row"><span class="cat">Desk object</span><a class="view" href="https://www.areaware.com/products/gradient-puzzle-original" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="ridge-wallet" data-tier="everyday">
-      <span class="pill t-everyday">Everyday</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0613/6213/files/RoyalBlack-Wallet-THUMBNAIL_6694badf-3e94-49d0-9a4b-9c62f9bfe82b.jpg?v=1748985968" alt="Ridge aluminum wallet"></div>
-      <div class="cap"><span class="nm">Ridge Aluminum Wallet</span><span class="pr">$95</span></div>
-      <div class="overlay"><span class="vd">Ridge</span><span class="nm2">Aluminum Wallet</span>
-        <span class="why">Machined slim wallet with a lifetime warranty — engrave the back plate.</span>
-        <span class="row"><span class="cat">EDC</span><a class="view" href="https://ridge.com/products/aluminum-black" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="baronfig" data-tier="everyday">
-      <span class="pill t-everyday">Everyday</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0543/1257/files/starter-set_confidant-hex_buy-square_pen-blackout_confidant-charcoal_variant_01.jpg?v=1777575566" alt="Baron Fig Squire pen and Confidant notebook"></div>
-      <div class="cap"><span class="nm">Baron Fig Starter Set</span><span class="pr">$55</span></div>
-      <div class="overlay"><span class="vd">Baron Fig</span><span class="nm2">Squire pen + Confidant</span>
-        <span class="why">Cult notebook paired with a machined pen — deboss the cover, skip the freebie ballpoint.</span>
-        <span class="row"><span class="cat">Stationery</span><a class="view" href="https://baronfig.com/products/squire-hex-pen-confidant-classic-journal" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="orbitkey" data-tier="everyday">
-      <span class="pill t-everyday">Everyday</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0932/4482/files/orbitkey-leather-black-with-black-stitching-3.jpg?v=1751955361" alt="Orbitkey leather key organizer"></div>
-      <div class="cap"><span class="nm">Orbitkey Key Organizer</span><span class="pr">$45</span></div>
-      <div class="overlay"><span class="vd">Orbitkey</span><span class="nm2">Key Organizer (Leather)</span>
-        <span class="why">Silences the jangling keychain into a slim leather stack — monogrammable.</span>
-        <span class="row"><span class="cat">EDC</span><a class="view" href="https://www.orbitkey.com/products/orbitkey-2-0-leather" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="kinto" data-tier="everyday">
-      <span class="pill t-everyday">Everyday</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0146/0862/9808/files/80435_f9e066c2-9128-4b96-87c0-bd6486686ed2.jpg?v=1759365858" alt="Kinto To Go Tumbler"></div>
-      <div class="cap"><span class="nm">Kinto To Go Tumbler</span><span class="pr">$33</span></div>
-      <div class="overlay"><span class="vd">Kinto</span><span class="nm2">To Go Tumbler</span>
-        <span class="why">Quietly beautiful Japanese travel tumbler — the anti-Stanley for design people.</span>
-        <span class="row"><span class="cat">Drinkware</span><a class="view" href="https://kinto-usa.com/products/80435" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="airfly" data-tier="everyday">
-      <span class="pill t-everyday">Everyday</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0094/1621/2537/files/TS_AirFlyPro2_White_Hero.png?v=1781195865" alt="Twelve South AirFly Pro 2"></div>
-      <div class="cap"><span class="nm">Twelve South AirFly Pro 2</span><span class="pr">$60</span></div>
-      <div class="overlay"><span class="vd">Twelve South</span><span class="nm2">AirFly Pro 2</span>
-        <span class="why">Bluetooth bridge for airplane screens and gym TVs — the gadget frequent flyers adore.</span>
-        <span class="row"><span class="cat">Tech</span><a class="view" href="https://www.twelvesouth.com/products/airfly-pro-2" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="nimble-champ" data-tier="everyday">
-      <span class="pill t-everyday">Everyday</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/2544/1940/files/ChampStretch-10K-Cherry_FeatureTiles_1-Hero_R0_d2f93a29-57e4-4cf9-ba96-2c6d1ef9eb9d.jpg?v=1764028352" alt="Nimble Champ portable charger"></div>
-      <div class="cap"><span class="nm">Nimble Champ Charger</span><span class="pr">$60</span></div>
-      <div class="overlay"><span class="vd">Nimble</span><span class="nm2">Champ portable charger</span>
-        <span class="why">Eco-made power bank that fast-charges on the go — practical, planet-friendly swag.</span>
-        <span class="row"><span class="cat">Tech</span><a class="view" href="https://gonimble.com/products/champ-stretch-portable-charger" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="barebones-edison" data-tier="everyday">
-      <span class="pill t-everyday">Everyday</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0045/1297/2890/files/LIV-145_EdisonLightStick-Brass_PDP_V3H1_Off_Award.jpg?v=1748898094" alt="Barebones Edison Light Stick"></div>
-      <div class="cap"><span class="nm">Barebones Edison Light</span><span class="pr">$50</span></div>
-      <div class="overlay"><span class="vd">Barebones</span><span class="nm2">Edison Light Stick</span>
-        <span class="why">Brass-and-glass portable lantern that reads as a design object, not camp gear.</span>
-        <span class="row"><span class="cat">Camping</span><a class="view" href="https://barebonesliving.com/products/edison-light-stick" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="matador-towel" data-tier="everyday">
-      <span class="pill t-everyday">Everyday</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0585/0209/files/MATNDL2001BKW_Matador_NanodryLarge_granite_1_cropped.jpg?v=1759511439" alt="Matador NanoDry towel"></div>
-      <div class="cap"><span class="nm">Matador NanoDry Towel</span><span class="pr">$30</span></div>
-      <div class="overlay"><span class="vd">Matador</span><span class="nm2">NanoDry Packable Towel</span>
-        <span class="why">Packs to the size of a deck of cards and dries in minutes — gym, beach, or trail.</span>
-        <span class="row"><span class="cat">Camping</span><a class="view" href="https://matadorup.com/products/nanodry-packable-shower-towel-large-black-granite" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="ember" data-tier="elevated">
-      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://ember.com/cdn/shop/files/ember_CM1910_00-black_600x.jpg?v=1762439501" alt="Ember Mug 2"></div>
-      <div class="cap"><span class="nm">Ember Mug 2</span><span class="pr">$130</span></div>
-      <div class="overlay"><span class="vd">Ember</span><span class="nm2">Mug 2</span>
-        <span class="why">App-controlled heated mug — the guaranteed “whoa” gift on any desk.</span>
-        <span class="row"><span class="cat">Tech</span><a class="view" href="https://ember.com/products/ember-mug-2" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="leatherman" data-tier="elevated">
-      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/2787/3610/products/P26_P2_Fanned__q90.png?v=1569390255" alt="Leatherman Free P2 multitool"></div>
-      <div class="cap"><span class="nm">Leatherman Free P2</span><span class="pr">$140</span></div>
-      <div class="overlay"><span class="vd">Leatherman</span><span class="nm2">Free P2 multitool</span>
-        <span class="why">Magnetic, one-hand-open multitool made in Portland — engrave it, keep it for life.</span>
-        <span class="row"><span class="cat">EDC</span><a class="view" href="https://www.leatherman.com/free-p2.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="theragun" data-tier="elevated">
-      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://www.therabody.com/cdn/shop/files/Mini-Gen-3-Black-PLP-Thumbnail-1.png?v=1741752124" alt="Theragun Mini"></div>
-      <div class="cap"><span class="nm">Theragun Mini</span><span class="pr">$149</span></div>
-      <div class="overlay"><span class="vd">Therabody</span><span class="nm2">Theragun Mini</span>
-        <span class="why">Pocket percussive massage — a wellness gift people actually keep using.</span>
-        <span class="row"><span class="cat">Wellness</span><a class="view" href="https://www.therabody.com/products/theragun-mini-gen-3-black" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="airpods-pro" data-tier="elevated">
-      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://www.apple.com/v/airpods-pro/s/images/meta/og__c0ceegchesom_overview.png?202606102041" alt="Apple AirPods Pro 2"></div>
-      <div class="cap"><span class="nm">Apple AirPods Pro 2</span><span class="pr">$249</span></div>
-      <div class="overlay"><span class="vd">Apple</span><span class="nm2">AirPods Pro 2</span>
-        <span class="why">The safest premium-audio gift on earth — nobody is unhappy to receive these.</span>
-        <span class="row"><span class="cat">Audio</span><a class="view" href="https://www.apple.com/airpods-pro/" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="sonos-roam" data-tier="elevated">
-      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://media.sonos.com/images/znqtjj88/production/110a711ffb1d9ec82743734ef7477a7d400c8d11-2400x2400.png" alt="Sonos Roam 2 speaker"></div>
-      <div class="cap"><span class="nm">Sonos Roam 2</span><span class="pr">$179</span></div>
-      <div class="overlay"><span class="vd">Sonos</span><span class="nm2">Roam 2</span>
-        <span class="why">Pocket-sized Sonos that sounds far bigger than it looks — desk, shower, or trail.</span>
-        <span class="row"><span class="cat">Audio</span><a class="view" href="https://www.sonos.com/en-us/shop/roam-2" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="larq" data-tier="elevated">
-      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://res.cloudinary.com/larq/image/upload/q_auto,f_auto,w_auto/v1570729065/assets/spa/product/bottle/action/LARQ-Bottle_Monaco-Blue.jpg" alt="LARQ PureVis self-cleaning bottle"></div>
-      <div class="cap"><span class="nm">LARQ Bottle PureVis</span><span class="pr">$99</span></div>
-      <div class="overlay"><span class="vd">LARQ</span><span class="nm2">Bottle PureVis</span>
-        <span class="why">Self-cleaning UV-C bottle — a genuinely novel piece of design-tech.</span>
-        <span class="row"><span class="cat">Drinkware</span><a class="view" href="https://www.livelarq.com/shop/larq-bottle-purevis" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="apple-watch" data-tier="elevated">
-      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://www.apple.com/v/apple-watch-se-3/b/images/meta/apple-watch-se-3__d0wwc67lzg02_og.png?202605212143" alt="Apple Watch SE"></div>
-      <div class="cap"><span class="nm">Apple Watch SE</span><span class="pr">$249</span></div>
-      <div class="overlay"><span class="vd">Apple</span><span class="nm2">Apple Watch SE</span>
-        <span class="why">Fitness, notifications and Find My on the wrist — a broadly loved milestone-lite gift.</span>
-        <span class="row"><span class="cat">Wearable</span><a class="view" href="https://www.apple.com/apple-watch-se/" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="keychron" data-tier="elevated">
-      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0059/0630/1017/files/Keychron-K8-Ultra-8K-Wireless-Custom-Mechanical-Keyboard-1_9c24b513-8105-4a91-8bdf-7ef7fb4c65e2.jpg?v=1780624074" alt="Keychron K8 mechanical keyboard"></div>
-      <div class="cap"><span class="nm">Keychron K8 Keyboard</span><span class="pr">$110</span></div>
-      <div class="overlay"><span class="vd">Keychron</span><span class="nm2">K8 mechanical keyboard</span>
-        <span class="why">A satisfying, customizable mechanical board — an instant desk upgrade for keyboard nerds.</span>
-        <span class="row"><span class="cat">Tech</span><a class="view" href="https://www.keychron.com/products/keychron-k8-ultra-8k-wireless-custom-mechanical-keyboard" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="plugbug" data-tier="elevated">
-      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0094/1621/2537/files/12s_PlugBug_120_US_Hero_HiRes.jpg?v=1725282635" alt="Twelve South PlugBug charger"></div>
-      <div class="cap"><span class="nm">Twelve South PlugBug</span><span class="pr">$120</span></div>
-      <div class="overlay"><span class="vd">Twelve South</span><span class="nm2">PlugBug (Find My)</span>
-        <span class="why">Multiport GaN charger with Find My built in — never lose your charger again.</span>
-        <span class="row"><span class="cat">Tech</span><a class="view" href="https://www.twelvesouth.com/products/plugbug-multiport-usbc-charger-with-find-my" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="courant" data-tier="elevated">
-      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/2802/8888/products/CT_VM_Catch_2_Black_Gray_Background_Product_01_Web.jpg?v=1764333730" alt="Courant Catch wireless charging tray"></div>
-      <div class="cap"><span class="nm">Courant Catch:2 Tray</span><span class="pr">$120</span></div>
-      <div class="overlay"><span class="vd">Courant</span><span class="nm2">Catch:2 charging tray</span>
-        <span class="why">Italian-leather wireless charging tray that corrals keys, watch and phone in style.</span>
-        <span class="row"><span class="cat">Tech · desk</span><a class="view" href="https://staycourant.com/products/catch-2-classics" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="rumpl" data-tier="elevated">
-      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0272/8131/files/rumpl-printed-original-1-person-original-puffy-blanket-crystal-worl-together-ru01013191p-1239266264.png?v=1779214628" alt="Rumpl Original Puffy Blanket"></div>
-      <div class="cap"><span class="nm">Rumpl Puffy Blanket</span><span class="pr">$99</span></div>
-      <div class="overlay"><span class="vd">Rumpl</span><span class="nm2">Original Puffy Blanket</span>
-        <span class="why">A puffy, packable, machine-washable blanket — couch, campsite, or stadium.</span>
-        <span class="row"><span class="cat">Camping</span><a class="view" href="https://rumpl.com/products/original-puffy-blanket-together" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="helinox" data-tier="elevated">
-      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0039/1367/8918/files/helinox_chairone_re_highback_blackout_e629cebd-f518-4758-b8d6-e912e6f91694.png?v=1772109118" alt="Helinox Chair One"></div>
-      <div class="cap"><span class="nm">Helinox Chair One</span><span class="pr">$150</span></div>
-      <div class="overlay"><span class="vd">Helinox</span><span class="nm2">Chair One</span>
-        <span class="why">The packable camp chair that started a category — featherweight, sets up in seconds.</span>
-        <span class="row"><span class="cat">Camping</span><a class="view" href="https://www.helinox.com/products/chair-one-highback-re" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="biolite" data-tier="elevated">
-      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0666/9741/files/campstove-2csc0200-382115.png?v=1711827654" alt="BioLite CampStove 2+"></div>
-      <div class="cap"><span class="nm">BioLite CampStove 2+</span><span class="pr">$150</span></div>
-      <div class="overlay"><span class="vd">BioLite</span><span class="nm2">CampStove 2+</span>
-        <span class="why">Burns twigs to cook and charges your phone off the fire — peak adventure tech.</span>
-        <span class="row"><span class="cat">Camping</span><a class="view" href="https://www.bioliteenergy.com/products/campstove-2-plus" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="bellroy-travel" data-tier="travel">
-      <span class="pill t-travel">Travel</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://bellroy-product-images.imgix.net//bellroy_dot_com_gallery_image/USD/WTRB-BLK-301/0" alt="Bellroy Travel Wallet"></div>
-      <div class="cap"><span class="nm">Bellroy Travel Wallet</span><span class="pr">$99</span></div>
-      <div class="overlay"><span class="vd">Bellroy</span><span class="nm2">Travel Wallet</span>
-        <span class="why">Passport, cards, cash and a pen in one slim folio — the considered traveler's piece.</span>
-        <span class="row"><span class="cat">Travel · documents</span><a class="view" href="https://bellroy.com/products/travel-wallet-rfid" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="pd-techpouch" data-tier="travel">
-      <span class="pill t-travel">Travel</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/2986/1172/files/smalltechpouch-black-159A0505_10187358-9116-45c9-bf04-93a326319830.jpg?v=1762275795" alt="Peak Design Tech Pouch"></div>
-      <div class="cap"><span class="nm">Peak Design Tech Pouch</span><span class="pr">$60</span></div>
-      <div class="overlay"><span class="vd">Peak Design</span><span class="nm2">Tech Pouch</span>
-        <span class="why">Origami-fold organizer that tames every charger, cable and dongle.</span>
-        <span class="row"><span class="cat">Travel · cables</span><a class="view" href="https://www.peakdesign.com/products/tech-pouch" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="wacaco" data-tier="travel">
-      <span class="pill t-travel">Travel</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://www.wacaco.com/cdn/shop/products/Nanopresso_Grey-PNG--002-LD_b82dc871-a76d-4850-a66e-42d541261d2b.png?v=1698119888" alt="Wacaco Nanopresso portable espresso"></div>
-      <div class="cap"><span class="nm">Wacaco Nanopresso</span><span class="pr">$75</span></div>
-      <div class="overlay"><span class="vd">Wacaco</span><span class="nm2">Nanopresso</span>
-        <span class="why">Hand-pumped 18-bar espresso anywhere — peak Uncrate energy in a coat pocket.</span>
-        <span class="row"><span class="cat">Travel · coffee</span><a class="view" href="https://www.wacaco.com/products/nanopresso" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="ostrich" data-tier="travel">
-      <span class="pill t-travel">Travel</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://ostrichpillow.com/cdn/shop/files/PDP_GO_4_1.jpg?v=1779213490" alt="Ostrichpillow Go neck pillow"></div>
-      <div class="cap"><span class="nm">Ostrichpillow Go</span><span class="pr">$69</span></div>
-      <div class="overlay"><span class="vd">Ostrichpillow</span><span class="nm2">Go neck pillow</span>
-        <span class="why">Ergonomic memory-foam pillow that makes the red-eye survivable.</span>
-        <span class="row"><span class="cat">Travel · sleep</span><a class="view" href="https://ostrichpillow.com/products/go-neck-pillow" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="away" data-tier="travel">
-      <span class="pill t-travel">Travel</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://www.awaytravel.com/cdn/shop/files/95310acf-237d-4762-9619-f899a41073f5_20b2cb4b-50cc-41ed-b8f1-3b2b152ad4a1.jpg?v=1773689166" alt="Away The Carry-On suitcase"></div>
-      <div class="cap"><span class="nm">Away The Carry-On</span><span class="pr">$275</span></div>
-      <div class="overlay"><span class="vd">Away</span><span class="nm2">The Carry-On</span>
-        <span class="why">The cult hard-shell carry-on — monogram it to mark a milestone year.</span>
-        <span class="row"><span class="cat">Travel · luggage</span><a class="view" href="https://www.awaytravel.com/products/carry-on-jet-black" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="bellroy-toiletry" data-tier="travel">
-      <span class="pill t-travel">Travel</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://bellroy-product-images.imgix.net//bellroy_dot_com_gallery_image/USD/EDKC-BLK-215/0" alt="Bellroy Toiletry Kit Plus"></div>
-      <div class="cap"><span class="nm">Bellroy Toiletry Kit</span><span class="pr">$99</span></div>
-      <div class="overlay"><span class="vd">Bellroy</span><span class="nm2">Toiletry Kit Plus</span>
-        <span class="why">A grown-up Dopp kit — water-resistant, opens flat, looks sharp on a hotel shelf.</span>
-        <span class="row"><span class="cat">Travel · grooming</span><a class="view" href="https://bellroy.com/products/toiletry-kit-plus" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="matador-flatpak" data-tier="travel">
-      <span class="pill t-travel">Travel</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0585/0209/files/MATFP2C001O_MATADOR_WATERPROOFTOILETRYCASE_O_OMS3_54a60126-8f0f-4614-8db9-f4833da041aa.jpg?v=1772553276" alt="Matador FlatPak toiletry case"></div>
-      <div class="cap"><span class="nm">Matador FlatPak Case</span><span class="pr">$33</span></div>
-      <div class="overlay"><span class="vd">Matador</span><span class="nm2">FlatPak Toiletry Case</span>
-        <span class="why">Welded, waterproof toiletry case that packs to nothing — gear-nerd catnip.</span>
-        <span class="row"><span class="cat">Travel · grooming</span><a class="view" href="https://matadorup.com/products/flatpak-waterproof-toiletry-case-orange" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
-
-    <div class="card" data-id="nativeunion" data-tier="travel">
-      <span class="pill t-travel">Travel</span><span class="tags"></span>
-      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0066/9050/4822/files/POCK_65W_EU-Black-Tilted.png?v=1779075978" alt="Native Union Pocket GaN charger"></div>
-      <div class="cap"><span class="nm">Native Union GaN Charger</span><span class="pr">$60</span></div>
-      <div class="overlay"><span class="vd">Native Union</span><span class="nm2">Pocket GaN Charger 65W</span>
-        <span class="why">One compact brick fast-charges laptop and phone — the trip essential people forget to buy.</span>
-        <span class="row"><span class="cat">Travel · power</span><a class="view" href="https://nativeunion.com/products/pocket-gan-charger-pd-65w" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
-    </div>
 
     <div class="card" data-id="timex-s1" data-tier="milestone">
       <span class="pill t-milestone">Milestone</span><span class="tags"></span>
@@ -463,11 +166,223 @@
         <span class="row"><span class="cat">Outdoor</span><a class="view" href="https://www.snowpeak.com/products/takibi-fire-grill" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
     </div>
 
-  </div>
+    <div class="card" data-id="ember" data-tier="elevated">
+      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://ember.com/cdn/shop/files/ember_CM1910_00-black_600x.jpg?v=1762439501" alt="Ember Mug 2"></div>
+      <div class="cap"><span class="nm">Ember Mug 2</span><span class="pr">$130</span></div>
+      <div class="overlay"><span class="vd">Ember</span><span class="nm2">Mug 2</span>
+        <span class="why">App-controlled heated mug — the guaranteed “whoa” gift on any desk.</span>
+        <span class="row"><span class="cat">Tech</span><a class="view" href="https://ember.com/products/ember-mug-2" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
 
-  <footer>
-    Prices are ballpark current retail and exclude branding/bulk discounts — most of these brands run corporate gifting programs (and services like Reachdesk, Sendoso or SwagUp can warehouse &amp; ship on demand). Everyone's tags sync live to a shared store, so just send the link — no logins. Curated with an Uncrate / Gear Patrol / Huckberry sensibility.
-  </footer>
+    <div class="card" data-id="theragun" data-tier="elevated">
+      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://www.therabody.com/cdn/shop/files/Mini-Gen-3-Black-PLP-Thumbnail-1.png?v=1741752124" alt="Theragun Mini"></div>
+      <div class="cap"><span class="nm">Theragun Mini</span><span class="pr">$149</span></div>
+      <div class="overlay"><span class="vd">Therabody</span><span class="nm2">Theragun Mini</span>
+        <span class="why">Pocket percussive massage — a wellness gift people actually keep using.</span>
+        <span class="row"><span class="cat">Wellness</span><a class="view" href="https://www.therabody.com/products/theragun-mini-gen-3-black" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="airpods-pro" data-tier="elevated">
+      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://www.apple.com/v/airpods-pro/s/images/meta/og__c0ceegchesom_overview.png?202606102041" alt="Apple AirPods Pro 2"></div>
+      <div class="cap"><span class="nm">Apple AirPods Pro 2</span><span class="pr">$249</span></div>
+      <div class="overlay"><span class="vd">Apple</span><span class="nm2">AirPods Pro 2</span>
+        <span class="why">The safest premium-audio gift on earth — nobody is unhappy to receive these.</span>
+        <span class="row"><span class="cat">Audio</span><a class="view" href="https://www.apple.com/airpods-pro/" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="sonos-roam" data-tier="elevated">
+      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://media.sonos.com/images/znqtjj88/production/110a711ffb1d9ec82743734ef7477a7d400c8d11-2400x2400.png" alt="Sonos Roam 2 speaker"></div>
+      <div class="cap"><span class="nm">Sonos Roam 2</span><span class="pr">$179</span></div>
+      <div class="overlay"><span class="vd">Sonos</span><span class="nm2">Roam 2</span>
+        <span class="why">Pocket-sized Sonos that sounds far bigger than it looks — desk, shower, or trail.</span>
+        <span class="row"><span class="cat">Audio</span><a class="view" href="https://www.sonos.com/en-us/shop/roam-2" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="larq" data-tier="elevated">
+      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://res.cloudinary.com/larq/image/upload/q_auto,f_auto,w_auto/v1570729065/assets/spa/product/bottle/action/LARQ-Bottle_Monaco-Blue.jpg" alt="LARQ PureVis self-cleaning bottle"></div>
+      <div class="cap"><span class="nm">LARQ Bottle PureVis</span><span class="pr">$99</span></div>
+      <div class="overlay"><span class="vd">LARQ</span><span class="nm2">Bottle PureVis</span>
+        <span class="why">Self-cleaning UV-C bottle — a genuinely novel piece of design-tech.</span>
+        <span class="row"><span class="cat">Drinkware</span><a class="view" href="https://www.livelarq.com/shop/larq-bottle-purevis" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="apple-watch" data-tier="elevated">
+      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://www.apple.com/v/apple-watch-se-3/b/images/meta/apple-watch-se-3__d0wwc67lzg02_og.png?202605212143" alt="Apple Watch SE"></div>
+      <div class="cap"><span class="nm">Apple Watch SE</span><span class="pr">$249</span></div>
+      <div class="overlay"><span class="vd">Apple</span><span class="nm2">Apple Watch SE</span>
+        <span class="why">Fitness, notifications and Find My on the wrist — a broadly loved milestone-lite gift.</span>
+        <span class="row"><span class="cat">Wearable</span><a class="view" href="https://www.apple.com/apple-watch-se/" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="plugbug" data-tier="elevated">
+      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0094/1621/2537/files/12s_PlugBug_120_US_Hero_HiRes.jpg?v=1725282635" alt="Twelve South PlugBug charger"></div>
+      <div class="cap"><span class="nm">Twelve South PlugBug</span><span class="pr">$120</span></div>
+      <div class="overlay"><span class="vd">Twelve South</span><span class="nm2">PlugBug (Find My)</span>
+        <span class="why">Multiport GaN charger with Find My built in — never lose your charger again.</span>
+        <span class="row"><span class="cat">Tech</span><a class="view" href="https://www.twelvesouth.com/products/plugbug-multiport-usbc-charger-with-find-my" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="courant" data-tier="elevated">
+      <span class="pill t-elevated">Elevated</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/2802/8888/products/CT_VM_Catch_2_Black_Gray_Background_Product_01_Web.jpg?v=1764333730" alt="Courant Catch wireless charging tray"></div>
+      <div class="cap"><span class="nm">Courant Catch:2 Tray</span><span class="pr">$120</span></div>
+      <div class="overlay"><span class="vd">Courant</span><span class="nm2">Catch:2 charging tray</span>
+        <span class="why">Italian-leather wireless charging tray that corrals keys, watch and phone in style.</span>
+        <span class="row"><span class="cat">Tech · desk</span><a class="view" href="https://staycourant.com/products/catch-2-classics" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="bellroy-travel" data-tier="travel">
+      <span class="pill t-travel">Travel</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://bellroy-product-images.imgix.net//bellroy_dot_com_gallery_image/USD/WTRB-BLK-301/0" alt="Bellroy Travel Wallet"></div>
+      <div class="cap"><span class="nm">Bellroy Travel Wallet</span><span class="pr">$99</span></div>
+      <div class="overlay"><span class="vd">Bellroy</span><span class="nm2">Travel Wallet</span>
+        <span class="why">Passport, cards, cash and a pen in one slim folio — the considered traveler's piece.</span>
+        <span class="row"><span class="cat">Travel · documents</span><a class="view" href="https://bellroy.com/products/travel-wallet-rfid" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="pd-techpouch" data-tier="travel">
+      <span class="pill t-travel">Travel</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/2986/1172/files/smalltechpouch-black-159A0505_10187358-9116-45c9-bf04-93a326319830.jpg?v=1762275795" alt="Peak Design Tech Pouch"></div>
+      <div class="cap"><span class="nm">Peak Design Tech Pouch</span><span class="pr">$60</span></div>
+      <div class="overlay"><span class="vd">Peak Design</span><span class="nm2">Tech Pouch</span>
+        <span class="why">Origami-fold organizer that tames every charger, cable and dongle.</span>
+        <span class="row"><span class="cat">Travel · cables</span><a class="view" href="https://www.peakdesign.com/products/tech-pouch" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="wacaco" data-tier="travel">
+      <span class="pill t-travel">Travel</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://www.wacaco.com/cdn/shop/products/Nanopresso_Grey-PNG--002-LD_b82dc871-a76d-4850-a66e-42d541261d2b.png?v=1698119888" alt="Wacaco Nanopresso portable espresso"></div>
+      <div class="cap"><span class="nm">Wacaco Nanopresso</span><span class="pr">$75</span></div>
+      <div class="overlay"><span class="vd">Wacaco</span><span class="nm2">Nanopresso</span>
+        <span class="why">Hand-pumped 18-bar espresso anywhere — peak Uncrate energy in a coat pocket.</span>
+        <span class="row"><span class="cat">Travel · coffee</span><a class="view" href="https://www.wacaco.com/products/nanopresso" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="away" data-tier="travel">
+      <span class="pill t-travel">Travel</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://www.awaytravel.com/cdn/shop/files/95310acf-237d-4762-9619-f899a41073f5_20b2cb4b-50cc-41ed-b8f1-3b2b152ad4a1.jpg?v=1773689166" alt="Away The Carry-On suitcase"></div>
+      <div class="cap"><span class="nm">Away The Carry-On</span><span class="pr">$275</span></div>
+      <div class="overlay"><span class="vd">Away</span><span class="nm2">The Carry-On</span>
+        <span class="why">The cult hard-shell carry-on — monogram it to mark a milestone year.</span>
+        <span class="row"><span class="cat">Travel · luggage</span><a class="view" href="https://www.awaytravel.com/products/carry-on-jet-black" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="bellroy-toiletry" data-tier="travel">
+      <span class="pill t-travel">Travel</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://bellroy-product-images.imgix.net//bellroy_dot_com_gallery_image/USD/EDKC-BLK-215/0" alt="Bellroy Toiletry Kit Plus"></div>
+      <div class="cap"><span class="nm">Bellroy Toiletry Kit</span><span class="pr">$99</span></div>
+      <div class="overlay"><span class="vd">Bellroy</span><span class="nm2">Toiletry Kit Plus</span>
+        <span class="why">A grown-up Dopp kit — water-resistant, opens flat, looks sharp on a hotel shelf.</span>
+        <span class="row"><span class="cat">Travel · grooming</span><a class="view" href="https://bellroy.com/products/toiletry-kit-plus" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="matador-flatpak" data-tier="travel">
+      <span class="pill t-travel">Travel</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0585/0209/files/MATFP2C001O_MATADOR_WATERPROOFTOILETRYCASE_O_OMS3_54a60126-8f0f-4614-8db9-f4833da041aa.jpg?v=1772553276" alt="Matador FlatPak toiletry case"></div>
+      <div class="cap"><span class="nm">Matador FlatPak Case</span><span class="pr">$33</span></div>
+      <div class="overlay"><span class="vd">Matador</span><span class="nm2">FlatPak Toiletry Case</span>
+        <span class="why">Welded, waterproof toiletry case that packs to nothing — gear-nerd catnip.</span>
+        <span class="row"><span class="cat">Travel · grooming</span><a class="view" href="https://matadorup.com/products/flatpak-waterproof-toiletry-case-orange" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="nativeunion" data-tier="travel">
+      <span class="pill t-travel">Travel</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0066/9050/4822/files/POCK_65W_EU-Black-Tilted.png?v=1779075978" alt="Native Union Pocket GaN charger"></div>
+      <div class="cap"><span class="nm">Native Union GaN Charger</span><span class="pr">$60</span></div>
+      <div class="overlay"><span class="vd">Native Union</span><span class="nm2">Pocket GaN Charger 65W</span>
+        <span class="why">One compact brick fast-charges laptop and phone — the trip essential people forget to buy.</span>
+        <span class="row"><span class="cat">Travel · power</span><a class="view" href="https://nativeunion.com/products/pocket-gan-charger-pd-65w" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="snowpeak-mug" data-tier="everyday">
+      <span class="pill t-everyday">Everyday</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://www.snowpeak.com/cdn/shop/products/mg-143_alt_02_600x600.jpg?v=1642437764" alt="Snow Peak titanium mug"></div>
+      <div class="cap"><span class="nm">Snow Peak Ti-Single 450</span><span class="pr">$59</span></div>
+      <div class="overlay"><span class="vd">Snow Peak</span><span class="nm2">Ti-Single 450 mug</span>
+        <span class="why">Indestructible Japanese titanium that packs flat — laser-etch the logo on the base.</span>
+        <span class="row"><span class="cat">Drinkware</span><a class="view" href="https://www.snowpeak.com/products/titanium-single-450-cup-mg-043" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="fellow-carter" data-tier="everyday">
+      <span class="pill t-everyday">Everyday</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://fellowproducts.com/cdn/shop/files/Web_PDP_CarterMoveMug-16oz_Sienna_2.png?v=1774035954" alt="Fellow Carter Move mug"></div>
+      <div class="cap"><span class="nm">Fellow Carter Move</span><span class="pr">$39</span></div>
+      <div class="overlay"><span class="vd">Fellow</span><span class="nm2">Carter Move mug</span>
+        <span class="why">Design-award travel mug with a ceramic interior, so coffee still tastes like coffee.</span>
+        <span class="row"><span class="cat">Drinkware</span><a class="view" href="https://fellowproducts.com/products/carter-move-mug" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="areaware-puzzle" data-tier="everyday">
+      <span class="pill t-everyday">Everyday</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://www.areaware.com/cdn/shop/files/GradientPuzzle-Group-Silo-BWGP.jpg?v=1738810510" alt="Areaware Gradient Puzzle"></div>
+      <div class="cap"><span class="nm">Areaware Gradient Puzzle</span><span class="pr">$36</span></div>
+      <div class="overlay"><span class="vd">Areaware</span><span class="nm2">Gradient Puzzle</span>
+        <span class="why">A design object disguised as a puzzle — earns a permanent spot on the desk.</span>
+        <span class="row"><span class="cat">Desk object</span><a class="view" href="https://www.areaware.com/products/gradient-puzzle-original" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="ridge-wallet" data-tier="everyday">
+      <span class="pill t-everyday">Everyday</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0613/6213/files/RoyalBlack-Wallet-THUMBNAIL_6694badf-3e94-49d0-9a4b-9c62f9bfe82b.jpg?v=1748985968" alt="Ridge aluminum wallet"></div>
+      <div class="cap"><span class="nm">Ridge Aluminum Wallet</span><span class="pr">$95</span></div>
+      <div class="overlay"><span class="vd">Ridge</span><span class="nm2">Aluminum Wallet</span>
+        <span class="why">Machined slim wallet with a lifetime warranty — engrave the back plate.</span>
+        <span class="row"><span class="cat">EDC</span><a class="view" href="https://ridge.com/products/aluminum-black" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="baronfig" data-tier="everyday">
+      <span class="pill t-everyday">Everyday</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0543/1257/files/starter-set_confidant-hex_buy-square_pen-blackout_confidant-charcoal_variant_01.jpg?v=1777575566" alt="Baron Fig Squire pen and Confidant notebook"></div>
+      <div class="cap"><span class="nm">Baron Fig Starter Set</span><span class="pr">$55</span></div>
+      <div class="overlay"><span class="vd">Baron Fig</span><span class="nm2">Squire pen + Confidant</span>
+        <span class="why">Cult notebook paired with a machined pen — deboss the cover, skip the freebie ballpoint.</span>
+        <span class="row"><span class="cat">Stationery</span><a class="view" href="https://baronfig.com/products/squire-hex-pen-confidant-classic-journal" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="orbitkey" data-tier="everyday">
+      <span class="pill t-everyday">Everyday</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0932/4482/files/orbitkey-leather-black-with-black-stitching-3.jpg?v=1751955361" alt="Orbitkey leather key organizer"></div>
+      <div class="cap"><span class="nm">Orbitkey Key Organizer</span><span class="pr">$45</span></div>
+      <div class="overlay"><span class="vd">Orbitkey</span><span class="nm2">Key Organizer (Leather)</span>
+        <span class="why">Silences the jangling keychain into a slim leather stack — monogrammable.</span>
+        <span class="row"><span class="cat">EDC</span><a class="view" href="https://www.orbitkey.com/products/orbitkey-2-0-leather" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="kinto" data-tier="everyday">
+      <span class="pill t-everyday">Everyday</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0146/0862/9808/files/80435_f9e066c2-9128-4b96-87c0-bd6486686ed2.jpg?v=1759365858" alt="Kinto To Go Tumbler"></div>
+      <div class="cap"><span class="nm">Kinto To Go Tumbler</span><span class="pr">$33</span></div>
+      <div class="overlay"><span class="vd">Kinto</span><span class="nm2">To Go Tumbler</span>
+        <span class="why">Quietly beautiful Japanese travel tumbler — the anti-Stanley for design people.</span>
+        <span class="row"><span class="cat">Drinkware</span><a class="view" href="https://kinto-usa.com/products/80435" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="nimble-champ" data-tier="everyday">
+      <span class="pill t-everyday">Everyday</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/2544/1940/files/ChampStretch-10K-Cherry_FeatureTiles_1-Hero_R0_d2f93a29-57e4-4cf9-ba96-2c6d1ef9eb9d.jpg?v=1764028352" alt="Nimble Champ portable charger"></div>
+      <div class="cap"><span class="nm">Nimble Champ Charger</span><span class="pr">$60</span></div>
+      <div class="overlay"><span class="vd">Nimble</span><span class="nm2">Champ portable charger</span>
+        <span class="why">Eco-made power bank that fast-charges on the go — practical, planet-friendly swag.</span>
+        <span class="row"><span class="cat">Tech</span><a class="view" href="https://gonimble.com/products/champ-stretch-portable-charger" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+    <div class="card" data-id="matador-towel" data-tier="everyday">
+      <span class="pill t-everyday">Everyday</span><span class="tags"></span>
+      <div class="imgwrap"><img loading="lazy" src="https://cdn.shopify.com/s/files/1/0585/0209/files/MATNDL2001BKW_Matador_NanodryLarge_granite_1_cropped.jpg?v=1759511439" alt="Matador NanoDry towel"></div>
+      <div class="cap"><span class="nm">Matador NanoDry Towel</span><span class="pr">$30</span></div>
+      <div class="overlay"><span class="vd">Matador</span><span class="nm2">NanoDry Packable Towel</span>
+        <span class="why">Packs to the size of a deck of cards and dries in minutes — gym, beach, or trail.</span>
+        <span class="row"><span class="cat">Camping</span><a class="view" href="https://matadorup.com/products/nanodry-packable-shower-towel-large-black-granite" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>
+    </div>
+
+  </div>
 </div>
 
 <script>
