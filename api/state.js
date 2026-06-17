@@ -36,11 +36,19 @@ export default async function handler(req, res) {
     return s.toUpperCase();
   }
 
+  const PALETTE = ['#e24b4a', '#185fa5', '#0f6e56', '#b8731a', '#534ab7', '#993556', '#1d9e75', '#d85a30', '#0c447c', '#444441'];
   function colorFor(n) {
-    const PALETTE = ['#e24b4a', '#185fa5', '#0f6e56', '#b8731a', '#534ab7', '#993556', '#1d9e75', '#d85a30', '#0c447c', '#444441'];
     let h = 0;
     for (let i = 0; i < n.length; i++) h = ((h * 31 + n.charCodeAt(i)) >>> 0);
     return PALETTE[h % PALETTE.length];
+  }
+  // Pick the first palette color not already taken; fall back to hash once all 10 are used.
+  function assignColor(name, users) {
+    const used = new Set(Object.keys(users).map(function (k) { return users[k].c; }));
+    for (let i = 0; i < PALETTE.length; i++) {
+      if (!used.has(PALETTE[i])) return PALETTE[i];
+    }
+    return colorFor(name);
   }
 
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -66,7 +74,7 @@ export default async function handler(req, res) {
       if (type === 'user') {
         if (!state.users) state.users = {};
         if (!state.users[name]) {
-          state.users[name] = { i: initials(name), c: colorFor(name) };
+          state.users[name] = { i: initials(name), c: assignColor(name, state.users) };
         }
       } else if (type === 'toggle') {
         if (!state.picks) state.picks = {};

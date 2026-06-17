@@ -43,30 +43,31 @@
     text-transform:uppercase;padding:4px 9px;border-radius:999px;color:#fff;z-index:3}
   .t-everyday{background:var(--teal)} .t-elevated{background:var(--blue)}
   .t-travel{background:var(--amber)} .t-milestone{background:var(--purple)}
-  .tags{position:absolute;top:10px;right:10px;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:62%;z-index:4;transition:opacity .15s}
-  .card:hover .tags{opacity:0}
-  .trash-btn{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:#d85a30;border:none;cursor:pointer;opacity:0;transition:opacity .15s;color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;z-index:5}
+  .tags{position:absolute;top:10px;right:10px;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:62%;z-index:6}
+  .trash-btn{position:absolute;top:10px;left:10px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.9);border:1px solid var(--line);cursor:pointer;opacity:0;transition:opacity .15s;color:#1b1b19;font-size:13px;display:flex;align-items:center;justify-content:center;z-index:6;box-shadow:0 1px 3px rgba(0,0,0,.12)}
   .card:hover .trash-btn{opacity:1}
+  .trash-btn:hover{background:#fff}
+  .card:hover .pill{opacity:0;transition:opacity .15s}
   .tagdot{width:25px;height:25px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
     font-size:11px;font-weight:600;color:#fff;border:2px solid #fff;box-sizing:border-box}
   .tagdot.more{background:#5f5e5a}
-  .card.trashed{opacity:0.5}
-  .card.trashed .pill,.card.trashed .cap{opacity:0.6}
+  .card.trashed{opacity:0.55;order:1}
+  .card.trashed .cap{opacity:0.7}
   .cap{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:14px 15px;
     border-top:1px solid var(--line)}
   .cap .nm{font-size:14.5px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
   .cap .pr{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;padding-top:1px}
   .overlay{position:absolute;left:0;right:0;top:0;bottom:0;
-    background:linear-gradient(180deg,rgba(18,18,17,.30) 0%,rgba(18,18,17,.92) 64%);
-    color:#fff;opacity:0;transition:opacity .22s ease;
+    background:linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.86) 42%,rgba(255,255,255,.98) 100%);
+    color:#1b1b19;opacity:0;transition:opacity .22s ease;
     display:flex;flex-direction:column;justify-content:flex-end;padding:18px;z-index:2}
   .card:hover .overlay{opacity:1}
-  .overlay .vd{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.7)}
-  .overlay .nm2{font-size:17px;font-weight:600;margin:2px 0 8px;letter-spacing:-.01em}
-  .overlay .why{font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.92)}
+  .overlay .vd{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .overlay .nm2{font-size:17px;font-weight:600;margin:2px 0 8px;letter-spacing:-.01em;color:var(--ink)}
+  .overlay .why{font-size:13.5px;line-height:1.5;color:#3a3933}
   .overlay .row{margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .overlay .cat{font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border:1px solid rgba(255,255,255,.4);border-radius:999px}
-  .overlay .view{font-size:13px;font-weight:600;color:#fff;text-decoration:none;white-space:nowrap}
+  .overlay .cat{font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:3px 9px;border:1px solid rgba(0,0,0,.25);border-radius:999px;color:var(--muted)}
+  .overlay .view{font-size:13px;font-weight:600;color:var(--ink);text-decoration:none;white-space:nowrap}
   .overlay .view:hover{text-decoration:underline}
   .hide{display:none !important}
   .modal-bg{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:100;opacity:0;pointer-events:none;transition:opacity .2s}
@@ -488,15 +489,29 @@
     });
   }
 
+  function ensureArchiveBtn(card,id){
+    var btn=card.querySelector('.trash-btn');
+    if(!btn){
+      btn=document.createElement('button');
+      btn.className='trash-btn';btn.setAttribute('data-id',id);
+      btn.addEventListener('click',function(e){e.stopPropagation();trashItem(id);});
+      card.insertBefore(btn,card.firstChild);
+    }
+    return btn;
+  }
   function renderCard(id){
     var card=document.querySelector('.card[data-id="'+id+'"]');if(!card)return;
     var item=state.items&&state.items.find(function(i){return i.id===id;});
+    var trashed=!!(item&&item.trashed);
     var box=card.querySelector('.tags');var arr=state.picks[id]||[];box.innerHTML='';
     arr.slice(0,5).forEach(function(n){var u=state.users[n]||{i:initials(n),c:colorFor(n)};
       var d=document.createElement('span');d.className='tagdot';d.style.background=u.c;d.textContent=u.i;d.title=n;box.appendChild(d);});
     if(arr.length>5){var more=document.createElement('span');more.className='tagdot more';more.textContent='+'+(arr.length-5);box.appendChild(more);}
     card.classList.toggle('picked', !!me && arr.indexOf(me)>=0);
-    card.classList.toggle('trashed', !!(item&&item.trashed));
+    card.classList.toggle('trashed', trashed);
+    var btn=ensureArchiveBtn(card,id);
+    btn.textContent=trashed?'↩':'🗑';
+    btn.title=trashed?'Restore item':'Archive item';
   }
   function renderDynamicItems(){
     if(!state.items)return;
@@ -654,7 +669,7 @@
   });
 
   document.querySelectorAll('.card').forEach(function(card){
-    card.addEventListener('click',function(e){if(e.target.closest('a'))return;toggle(card.getAttribute('data-id'));});
+    card.addEventListener('click',function(e){if(e.target.closest('a')||e.target.closest('.trash-btn'))return;toggle(card.getAttribute('data-id'));});
   });
   var chips=document.querySelectorAll('#bar .chip[data-f]');
   var activeFilter='all';
