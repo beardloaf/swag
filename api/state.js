@@ -1,10 +1,17 @@
 export default async function handler(req, res) {
-  const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
-  const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+  // Accept whichever names the Upstash/Vercel-KV integration created.
+  const redisUrl = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+  const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
 
   if (!redisUrl || !redisToken) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    return res.status(500).json({ error: 'Redis not configured' });
+    const present = Object.keys(process.env).filter(function (k) {
+      return /UPSTASH|KV_|REDIS/.test(k);
+    });
+    return res.status(500).json({
+      error: 'Redis not configured',
+      hint: 'No Upstash/KV REST URL+token env vars found. Detected related vars: ' + (present.join(', ') || 'none'),
+    });
   }
 
   const redisCall = async (command, ...args) => {
