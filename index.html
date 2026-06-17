@@ -537,13 +537,18 @@
       card.querySelector('.trash-btn').addEventListener('click',function(e){e.stopPropagation();trashItem(item.id);});
     });
   }
+  var TIER_ORDER={milestone:0,elevated:1,travel:2,everyday:3};
   function reorderCards(){
     var grid=document.getElementById('grid');
     var cards=Array.from(grid.querySelectorAll('.card'));
     cards.sort(function(a,b){
-      var aTrashed=a.classList.contains('trashed')?1:0;
-      var bTrashed=b.classList.contains('trashed')?1:0;
-      return aTrashed-bTrashed;
+      // archived items always sink to the bottom
+      var at=a.classList.contains('trashed')?1:0, bt=b.classList.contains('trashed')?1:0;
+      if(at!==bt)return at-bt;
+      // then group by tier (milestone → elevated → travel → everyday)
+      var ao=TIER_ORDER[a.getAttribute('data-tier')]; if(ao===undefined)ao=99;
+      var bo=TIER_ORDER[b.getAttribute('data-tier')]; if(bo===undefined)bo=99;
+      return ao-bo;
     });
     cards.forEach(function(c){grid.appendChild(c);});
   }
