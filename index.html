@@ -64,6 +64,24 @@
   .overlay .view{font-size:13px;font-weight:600;color:#fff;text-decoration:none;white-space:nowrap}
   .overlay .view:hover{text-decoration:underline}
   .hide{display:none !important}
+  .modal-bg{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:100;opacity:0;pointer-events:none;transition:opacity .2s}
+  .modal-bg.open{opacity:1;pointer-events:auto}
+  .modal{background:#fff;border-radius:16px;padding:24px;max-width:500px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+  .modal h2{margin:0 0 16px;font-size:20px}
+  .form-group{margin-bottom:14px}
+  .form-group label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px;font-weight:600}
+  .form-group input,.form-group textarea{width:100%;padding:8px 12px;border:1px solid var(--line);border-radius:8px;font-size:14px;font-family:inherit}
+  .form-group textarea{resize:vertical;min-height:60px}
+  .form-group input:focus,.form-group textarea:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(83,74,183,.1)}
+  .form-row{display:flex;gap:12px}
+  .form-row .form-group{flex:1}
+  .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+  .modal-actions button{padding:8px 16px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:13px;font-weight:600}
+  .modal-actions button.primary{background:var(--purple);color:#fff;border-color:var(--purple)}
+  .modal-actions button.primary:hover{opacity:.9}
+  .modal-actions button:hover{border-color:rgba(0,0,0,.25)}
+  .meta-preview{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:12px;margin-top:12px;font-size:12px}
+  .meta-preview img{max-width:100%;height:auto;border-radius:6px;margin-bottom:8px}
 </style>
 </head>
 <body>
@@ -80,16 +98,15 @@
       <span class="dot" id="meDot"></span>
     </div>
     <div class="participants" id="participants"></div>
-    <button class="chip" id="shareBtn">Copy share link</button>
+    <button class="chip" id="addItemBtn">+ Add item</button>
   </div>
   <p class="hint">Live shared board — add your name, then click tiles to tag. Everyone's picks sync automatically; just send the link. <span id="syncStatus" style="font-weight:600"></span></p>
 
   <div class="bar" id="bar">
-    <button class="chip on" data-f="all">All 32</button>
-    <button class="chip" data-f="milestone">Milestone · $349–760</button>
-    <button class="chip" data-f="elevated">Elevated · $99–249</button>
-    <button class="chip" data-f="travel">Travel · beyond bags</button>
-    <button class="chip" data-f="everyday">Everyday · $30–95</button>
+    <button class="chip on" data-f="all">All</button>
+    <button class="chip" data-f="milestone">Milestone</button>
+    <button class="chip" data-f="elevated">Elevated</button>
+    <button class="chip" data-f="everyday">Everyday</button>
   </div>
 
   <div class="grid" id="grid">
@@ -383,11 +400,56 @@
     </div>
 
   </div>
+
+  <div class="modal-bg" id="addItemModal">
+    <div class="modal">
+      <h2>Add item</h2>
+      <div class="form-group">
+        <label>Product URL</label>
+        <input id="itemUrl" type="url" placeholder="https://example.com/product" />
+        <button class="chip" style="margin-top:8px" id="fetchBtn">Fetch metadata</button>
+      </div>
+      <div id="metaPreview"></div>
+      <div class="form-group">
+        <label>Product name</label>
+        <input id="itemName" type="text" />
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="itemDesc"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Price</label>
+          <input id="itemPrice" type="text" placeholder="$120" />
+        </div>
+        <div class="form-group">
+          <label>Tier</label>
+          <select id="itemTier" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;font-size:14px">
+            <option value="everyday">Everyday</option>
+            <option value="elevated">Elevated</option>
+            <option value="milestone">Milestone</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <input id="itemCat" type="text" placeholder="Tech · gear" />
+      </div>
+      <div class="form-group">
+        <label>Image URL</label>
+        <input id="itemImg" type="url" />
+      </div>
+      <div class="modal-actions">
+        <button id="cancelAddBtn">Cancel</button>
+        <button class="primary" id="confirmAddBtn">Add</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
 (function(){
-  var STORE='https://api.restful-api.dev/objects/ff8081819d82fab6019ed29b502a219f';
   var ME_KEY='swag-me';
   var PALETTE=['#e24b4a','#185fa5','#0f6e56','#b8731a','#534ab7','#993556','#1d9e75','#d85a30','#0c447c','#444441'];
   var state={users:{},picks:{}};
@@ -400,12 +462,10 @@
   function setStatus(ok){var el=document.getElementById('syncStatus');if(!el)return;el.textContent=ok?'● live':'● offline — retrying';el.style.color=ok?'#1d9e75':'#b8731a';}
 
   function getRemote(){
-    return fetch(STORE,{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();})
-      .then(function(o){var d=(o&&o.data)||{};return {users:d.users||{},picks:d.picks||{}};});
+    return fetch('/api/state',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();});
   }
-  function putRemote(data){
-    return fetch(STORE,{method:'PUT',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({name:'engine-swag-board',data:data})}).then(function(r){if(!r.ok)throw 0;return r.json();});
+  function postRemote(body){
+    return fetch('/api/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){if(!r.ok)throw 0;return r.json();});
   }
 
   function renderCard(id){
@@ -429,11 +489,10 @@
   function renderMe(){var md=document.getElementById('meDot');if(me){var u=state.users[me]||{i:initials(me),c:colorFor(me)};md.style.background=u.c;md.textContent=u.i;}else{md.style.background='#b4b2a9';md.textContent='';}}
   function renderUI(){renderAll();renderParticipants();renderMe();}
 
-  function commit(mutate){
+  function commit(body){
     pending++;
     chain=chain.then(function(){
-      return getRemote().then(function(remote){state=remote;mutate();return putRemote(state);})
-        .then(function(){setStatus(true);},function(){setStatus(false);});
+      return postRemote(body).then(function(remote){state=remote;setStatus(true);},function(){setStatus(false);});
     }).then(function(){pending--;renderUI();});
     return chain;
   }
@@ -441,21 +500,15 @@
   function setMe(name){
     name=(name||'').trim();if(!name)return;me=name;try{localStorage.setItem(ME_KEY,me);}catch(e){}
     ensureUser(me);renderMe();
-    commit(function(){ensureUser(me);});
+    commit({type:'user',name:me});
   }
   function toggle(id){
     if(!me){var inp=document.getElementById('nameInput');inp.focus();inp.classList.add('flash');setTimeout(function(){inp.classList.remove('flash');},900);return;}
     ensureUser(me);
-    var arr=state.picks[id]||[];var had=arr.indexOf(me)>=0;
-    if(had)arr.splice(arr.indexOf(me),1);else arr.push(me);
-    state.picks[id]=arr;renderCard(id);renderParticipants();
-    var want=!had;
-    commit(function(){
-      ensureUser(me);
-      var a=state.picks[id]||[];var j=a.indexOf(me);
-      if(want&&j<0)a.push(me); if(!want&&j>=0)a.splice(j,1);
-      state.picks[id]=a;
-    });
+    state.picks[id]=state.picks[id]||[];var had=state.picks[id].indexOf(me)>=0;
+    if(had)state.picks[id].splice(state.picks[id].indexOf(me),1);else state.picks[id].push(me);
+    renderCard(id);renderParticipants();
+    commit({type:'toggle',name:me,id:id});
   }
   function poll(){ if(pending>0)return;
     getRemote().then(function(remote){if(pending>0)return;state=remote;setStatus(true);renderUI();},function(){setStatus(false);}); }
@@ -465,11 +518,64 @@
   nameInput.addEventListener('change',function(){setMe(this.value);});
   nameInput.addEventListener('keydown',function(e){if(e.key==='Enter'){setMe(this.value);this.blur();}});
 
-  document.getElementById('shareBtn').addEventListener('click',function(){
-    var btn=this;var txt=btn.textContent;var url=location.href.split('#')[0];
-    var done=function(){btn.textContent='Link copied ✓';setTimeout(function(){btn.textContent=txt;},1500);};
-    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(done,function(){prompt('Copy this link:',url);});}
-    else{prompt('Copy this link:',url);}
+  // Modal for adding items
+  var modal=document.getElementById('addItemModal');
+  var addBtn=document.getElementById('addItemBtn');
+  var cancelBtn=document.getElementById('cancelAddBtn');
+  var confirmBtn=document.getElementById('confirmAddBtn');
+  var fetchBtn=document.getElementById('fetchBtn');
+
+  addBtn.addEventListener('click',function(){modal.classList.add('open');});
+  cancelBtn.addEventListener('click',function(){modal.classList.remove('open');clearForm();});
+  modal.addEventListener('click',function(e){if(e.target===modal)modal.classList.remove('open');});
+
+  fetchBtn.addEventListener('click',function(){
+    var url=(document.getElementById('itemUrl').value||'').trim();
+    if(!url)return alert('Enter a URL');
+    fetch('/api/metadata?url='+encodeURIComponent(url)).then(function(r){return r.json();}).then(function(data){
+      if(!data.title)return alert('Could not fetch metadata');
+      document.getElementById('itemName').value=data.title||'';
+      document.getElementById('itemDesc').value=data.description||'';
+      document.getElementById('itemPrice').value=data.price||'';
+      document.getElementById('itemTier').value=data.suggestedTier||'everyday';
+      document.getElementById('itemImg').value=data.image||'';
+      var preview='';
+      if(data.image)preview='<img src="'+data.image+'" style="max-height:100px">';
+      preview+='<p><strong>'+data.title+'</strong><br>'+data.price+' · '+data.suggestedTier+'</p>';
+      document.getElementById('metaPreview').innerHTML='<div class="meta-preview">'+preview+'</div>';
+    }).catch(function(e){alert('Error: '+e.message);});
+  });
+
+  function clearForm(){
+    document.getElementById('itemUrl').value='';
+    document.getElementById('itemName').value='';
+    document.getElementById('itemDesc').value='';
+    document.getElementById('itemPrice').value='';
+    document.getElementById('itemCat').value='';
+    document.getElementById('itemImg').value='';
+    document.getElementById('itemTier').value='everyday';
+    document.getElementById('metaPreview').innerHTML='';
+  }
+
+  confirmBtn.addEventListener('click',function(){
+    var name=(document.getElementById('itemName').value||'').trim();
+    if(!name)return alert('Product name required');
+    var id=name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+    var item={
+      id:id,
+      tier:document.getElementById('itemTier').value,
+      image:document.getElementById('itemImg').value,
+      name:name,
+      price:document.getElementById('itemPrice').value,
+      description:document.getElementById('itemDesc').value,
+      category:document.getElementById('itemCat').value,
+      url:document.getElementById('itemUrl').value
+    };
+    commit({type:'addItem',item:item}).then(function(){
+      modal.classList.remove('open');
+      clearForm();
+      alert('Item added! Refresh to see it.');
+    });
   });
 
   document.querySelectorAll('.card').forEach(function(card){
