@@ -88,6 +88,12 @@
   .modal-actions button:hover{border-color:rgba(0,0,0,.25)}
   .meta-preview{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:12px;margin-top:12px;font-size:12px}
   .meta-preview img{max-width:100%;height:auto;border-radius:6px;margin-bottom:8px}
+  .img-picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:8px;max-height:220px;overflow-y:auto}
+  .img-picker:empty{display:none}
+  .img-picker .thumb{position:relative;aspect-ratio:1;border:2px solid var(--line);border-radius:8px;overflow:hidden;cursor:pointer;background:#fff;padding:0}
+  .img-picker .thumb img{width:100%;height:100%;object-fit:contain}
+  .img-picker .thumb.sel{border-color:var(--purple);box-shadow:0 0 0 2px rgba(83,74,183,.25)}
+  .img-picker-status{font-size:12px;color:var(--muted);margin:4px 0}
 </style>
 </head>
 <body>
@@ -445,13 +451,9 @@
         <input id="itemCat" type="text" placeholder="Tech · gear" />
       </div>
       <div class="form-group">
-        <label>Image URL</label>
-        <div style="display:flex;gap:8px;align-items:center">
-          <button type="button" class="chip" id="imgPrevBtn" style="padding:6px 10px;font-size:12px">← Prev</button>
-          <input id="itemImg" type="url" style="flex:1" />
-          <button type="button" class="chip" id="imgNextBtn" style="padding:6px 10px;font-size:12px">Next →</button>
-        </div>
-        <div id="imgCounter" style="font-size:12px;color:var(--muted);margin-top:6px"></div>
+        <label>Choose an image</label>
+        <div id="imgPicker" class="img-picker"></div>
+        <input id="itemImg" type="url" placeholder="…or paste an image URL" style="margin-top:8px" />
       </div>
       <div class="modal-actions">
         <button id="cancelAddBtn">Cancel</button>
@@ -600,40 +602,66 @@
   var cancelBtn=document.getElementById('cancelAddBtn');
   var confirmBtn=document.getElementById('confirmAddBtn');
   var fetchBtn=document.getElementById('fetchBtn');
-  var imgPrevBtn=document.getElementById('imgPrevBtn');
-  var imgNextBtn=document.getElementById('imgNextBtn');
-  var imgUrls=[]; var imgIndex=0;
+  var imgPicker=document.getElementById('imgPicker');
+  var itemImgInput=document.getElementById('itemImg');
 
   addBtn.addEventListener('click',function(){modal.classList.add('open');});
   cancelBtn.addEventListener('click',function(){modal.classList.remove('open');clearForm();});
   modal.addEventListener('click',function(e){if(e.target===modal)modal.classList.remove('open');});
 
-  function updateImageCounter(){
-    var counter=document.getElementById('imgCounter');
-    if(imgUrls.length>1)counter.textContent=(imgIndex+1)+'/'+imgUrls.length;else counter.textContent='';
+  function selectThumb(thumb,urlVal){
+    Array.prototype.forEach.call(imgPicker.querySelectorAll('.thumb'),function(t){t.classList.remove('sel');});
+    if(thumb)thumb.classList.add('sel');
+    itemImgInput.value=urlVal;
   }
-
-  imgPrevBtn.addEventListener('click',function(e){e.preventDefault();if(imgUrls.length<2)return;imgIndex=(imgIndex-1+imgUrls.length)%imgUrls.length;document.getElementById('itemImg').value=imgUrls[imgIndex];updateImageCounter();});
-  imgNextBtn.addEventListener('click',function(e){e.preventDefault();if(imgUrls.length<2)return;imgIndex=(imgIndex+1)%imgUrls.length;document.getElementById('itemImg').value=imgUrls[imgIndex];updateImageCounter();});
+  function renderImagePicker(images){
+    imgPicker.innerHTML='';
+    if(!images||!images.length){
+      var status=document.createElement('div');
+      status.className='img-picker-status';
+      status.textContent='No images found — paste an image URL below.';
+      imgPicker.appendChild(status);
+      return;
+    }
+    images.forEach(function(src){
+      var b=document.createElement('button');
+      b.type='button';b.className='thumb';b.title=src;
+      var im=document.createElement('img');im.loading='lazy';im.src=src;
+      // Drop thumbnails that fail to load so the user only sees real options.
+      im.onerror=function(){b.remove();};
+      b.appendChild(im);
+      b.addEventListener('click',function(e){e.preventDefault();selectThumb(b,src);});
+      imgPicker.appendChild(b);
+    });
+  }
+  // Keep the manual URL field and the picker in sync.
+  itemImgInput.addEventListener('input',function(){
+    Array.prototype.forEach.call(imgPicker.querySelectorAll('.thumb'),function(t){
+      t.classList.toggle('sel', t.title===itemImgInput.value);
+    });
+  });
 
   fetchBtn.addEventListener('click',function(){
     var url=(document.getElementById('itemUrl').value||'').trim();
     if(!url)return alert('Enter a URL');
-    fetch('/api/metadata?url='+encodeURIComponent(url)).then(function(r){return r.json();}).then(function(data){
-      if(!data.title)return alert('Could not fetch metadata');
-      document.getElementById('itemName').value=data.title||'';
-      document.getElementById('itemDesc').value=data.description||'';
-      document.getElementById('itemPrice').value=data.price||'';
-      document.getElementById('itemTier').value=data.suggestedTier||'everyday';
-      imgUrls=data.images||[];imgIndex=0;
-      if(!imgUrls.length&&data.image)imgUrls=[data.image];
-      if(imgUrls.length)document.getElementById('itemImg').value=imgUrls[0];
-      updateImageCounter();
-      var preview='';
-      if(imgUrls[0])preview='<img src="'+imgUrls[0]+'" style="max-height:100px">';
-      preview+='<p><strong>'+data.title+'</strong><br>'+data.price+' · '+data.suggestedTier+'</p>';
-      document.getElementById('metaPreview').innerHTML='<div class="meta-preview">'+preview+'</div>';
-    }).catch(function(e){alert('Error: '+e.message);});
+    fetchBtn.disabled=true;var orig=fetchBtn.textContent;fetchBtn.textContent='Fetching…';
+    fetch('/api/metadata?url='+encodeURIComponent(url))
+      .then(function(r){return r.text();})
+      .then(function(text){
+        var data;
+        try{data=JSON.parse(text);}catch(e){throw new Error('Server returned an unexpected response. Try again or fill the fields manually.');}
+        if(data.error&&!(data.images&&data.images.length)&&!data.title){
+          alert('Could not read that page: '+data.error+'\nYou can still fill the fields in manually.');
+        }
+        if(data.title)document.getElementById('itemName').value=data.title;
+        if(data.description)document.getElementById('itemDesc').value=data.description;
+        if(data.price)document.getElementById('itemPrice').value=data.price;
+        if(data.suggestedTier)document.getElementById('itemTier').value=data.suggestedTier;
+        renderImagePicker(data.images||[]);
+        itemImgInput.value=''; // nothing auto-selected — the user picks
+      })
+      .catch(function(e){alert('Error: '+e.message);})
+      .then(function(){fetchBtn.disabled=false;fetchBtn.textContent=orig;});
   });
 
   function clearForm(){
@@ -644,14 +672,15 @@
     document.getElementById('itemCat').value='';
     document.getElementById('itemImg').value='';
     document.getElementById('itemTier').value='everyday';
-    document.getElementById('metaPreview').innerHTML='';
-    imgUrls=[];imgIndex=0;updateImageCounter();
+    var mp=document.getElementById('metaPreview');if(mp)mp.innerHTML='';
+    imgPicker.innerHTML='';
   }
 
   confirmBtn.addEventListener('click',function(){
     var name=(document.getElementById('itemName').value||'').trim();
     if(!name)return alert('Product name required');
-    var id=name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+    if(!(document.getElementById('itemImg').value||'').trim()&&!confirm('No image selected — add this item without one?'))return;
+    var id=name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')+'-'+Date.now().toString(36);
     var item={
       id:id,
       tier:document.getElementById('itemTier').value,
