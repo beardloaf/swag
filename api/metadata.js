@@ -24,8 +24,18 @@ export default async function handler(req, res) {
     const price = priceMatch ? '$' + priceMatch[1] : null;
     const priceNum = priceMatch ? parseInt(priceMatch[1].replace(/,/g, '')) : 0;
 
+    const images = new Set();
+    if (ogImage) images.add(ogImage);
+    const imgMatches = html.match(/<img[^>]+src=["']([^"']+)["']/gi) || [];
+    imgMatches.slice(0, 10).forEach(tag => {
+      const src = tag.match(/src=["']([^"']+)["']/i)?.[1];
+      if (src && src.includes('http')) images.add(src);
+    });
+    const imgArray = Array.from(images).filter(img => img && !img.includes('data:'));
+
     res.status(200).json({
-      image: ogImage || null,
+      image: ogImage || imgArray[0] || null,
+      images: imgArray.slice(0, 5),
       title: ogTitle || null,
       description: ogDesc || null,
       price,

@@ -52,7 +52,7 @@ export default async function handler(req, res) {
       const raw = await redisCall('GET', 'swag:state');
       let state = raw ? JSON.parse(raw) : { users: {}, picks: {} };
 
-      const { type, name, id, item } = req.body;
+      const { type, name, id, item, trashed } = req.body;
 
       if (type === 'user') {
         if (!state.users) state.users = {};
@@ -77,6 +77,12 @@ export default async function handler(req, res) {
             state.items.push(item);
           }
         });
+      } else if (type === 'trash') {
+        if (!state.items) state.items = [];
+        const itemToTrash = state.items.find(i => i.id === id);
+        if (itemToTrash) {
+          itemToTrash.trashed = trashed;
+        }
       }
 
       await redisCall('SET', 'swag:state', JSON.stringify(state));

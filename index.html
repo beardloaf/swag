@@ -43,10 +43,15 @@
     text-transform:uppercase;padding:4px 9px;border-radius:999px;color:#fff;z-index:3}
   .t-everyday{background:var(--teal)} .t-elevated{background:var(--blue)}
   .t-travel{background:var(--amber)} .t-milestone{background:var(--purple)}
-  .tags{position:absolute;top:10px;right:10px;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:62%;z-index:4}
+  .tags{position:absolute;top:10px;right:10px;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:62%;z-index:4;transition:opacity .15s}
+  .card:hover .tags{opacity:0}
+  .trash-btn{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:#d85a30;border:none;cursor:pointer;opacity:0;transition:opacity .15s;color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;z-index:5}
+  .card:hover .trash-btn{opacity:1}
   .tagdot{width:25px;height:25px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
     font-size:11px;font-weight:600;color:#fff;border:2px solid #fff;box-sizing:border-box}
   .tagdot.more{background:#5f5e5a}
+  .card.trashed{opacity:0.5}
+  .card.trashed .pill,.card.trashed .cap{opacity:0.6}
   .cap{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:14px 15px;
     border-top:1px solid var(--line)}
   .cap .nm{font-size:14.5px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
@@ -106,6 +111,7 @@
     <button class="chip on" data-f="all">All</button>
     <button class="chip" data-f="milestone">Milestone</button>
     <button class="chip" data-f="elevated">Elevated</button>
+    <button class="chip" data-f="travel">Travel</button>
     <button class="chip" data-f="everyday">Everyday</button>
   </div>
 
@@ -428,6 +434,7 @@
           <select id="itemTier" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;font-size:14px">
             <option value="everyday">Everyday</option>
             <option value="elevated">Elevated</option>
+            <option value="travel">Travel</option>
             <option value="milestone">Milestone</option>
           </select>
         </div>
@@ -438,7 +445,12 @@
       </div>
       <div class="form-group">
         <label>Image URL</label>
-        <input id="itemImg" type="url" />
+        <div style="display:flex;gap:8px;align-items:center">
+          <button type="button" class="chip" id="imgPrevBtn" style="padding:6px 10px;font-size:12px">← Prev</button>
+          <input id="itemImg" type="url" style="flex:1" />
+          <button type="button" class="chip" id="imgNextBtn" style="padding:6px 10px;font-size:12px">Next →</button>
+        </div>
+        <div id="imgCounter" style="font-size:12px;color:var(--muted);margin-top:6px"></div>
       </div>
       <div class="modal-actions">
         <button id="cancelAddBtn">Cancel</button>
@@ -470,11 +482,13 @@
 
   function renderCard(id){
     var card=document.querySelector('.card[data-id="'+id+'"]');if(!card)return;
+    var item=state.items&&state.items.find(function(i){return i.id===id;});
     var box=card.querySelector('.tags');var arr=state.picks[id]||[];box.innerHTML='';
     arr.slice(0,5).forEach(function(n){var u=state.users[n]||{i:initials(n),c:colorFor(n)};
       var d=document.createElement('span');d.className='tagdot';d.style.background=u.c;d.textContent=u.i;d.title=n;box.appendChild(d);});
     if(arr.length>5){var more=document.createElement('span');more.className='tagdot more';more.textContent='+'+(arr.length-5);box.appendChild(more);}
     card.classList.toggle('picked', !!me && arr.indexOf(me)>=0);
+    card.classList.toggle('trashed', item&&item.trashed);
   }
   function renderDynamicItems(){
     if(!state.items)return;
@@ -486,6 +500,7 @@
       card.setAttribute('data-id',item.id);
       card.setAttribute('data-tier',item.tier);
       card.innerHTML='<span class="pill t-'+item.tier+'">'+item.tier.charAt(0).toUpperCase()+item.tier.slice(1)+'</span><span class="tags"></span>'+
+        '<button class="trash-btn" data-id="'+item.id+'" title="Remove item">🗑</button>'+
         '<div class="imgwrap"><img loading="lazy" src="'+item.image+'" alt="'+item.name+'"></div>'+
         '<div class="cap"><span class="nm">'+item.name+'</span><span class="pr">'+item.price+'</span></div>'+
         '<div class="overlay"><span class="vd">'+item.name+'</span><span class="nm2">'+item.name+'</span>'+
@@ -493,8 +508,19 @@
         '<span class="row"><span class="cat">'+item.category+'</span><a class="view" href="'+item.url+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>';
       grid.appendChild(card);
       renderCard(item.id);
-      card.addEventListener('click',function(e){if(e.target.closest('a'))return;toggle(item.id);});
+      card.addEventListener('click',function(e){if(e.target.closest('a')||e.target.closest('.trash-btn'))return;toggle(item.id);});
+      card.querySelector('.trash-btn').addEventListener('click',function(e){e.stopPropagation();trashItem(item.id);});
     });
+  }
+  function reorderCards(){
+    var grid=document.getElementById('grid');
+    var cards=Array.from(grid.querySelectorAll('.card'));
+    cards.sort(function(a,b){
+      var aTrashed=a.classList.contains('trashed')?1:0;
+      var bTrashed=b.classList.contains('trashed')?1:0;
+      return aTrashed-bTrashed;
+    });
+    cards.forEach(function(c){grid.appendChild(c);});
   }
   function renderAll(){document.querySelectorAll('.card').forEach(function(c){renderCard(c.getAttribute('data-id'));});}
   function renderParticipants(){
@@ -507,7 +533,7 @@
     });
   }
   function renderMe(){var md=document.getElementById('meDot');if(me){var u=state.users[me]||{i:initials(me),c:colorFor(me)};md.style.background=u.c;md.textContent=u.i;}else{md.style.background='#b4b2a9';md.textContent='';}}
-  function renderUI(){renderDynamicItems();renderAll();renderParticipants();renderMe();}
+  function renderUI(){renderDynamicItems();renderAll();renderParticipants();renderMe();reorderCards();}
 
   function commit(body){
     pending++;
@@ -530,6 +556,13 @@
     renderCard(id);renderParticipants();
     commit({type:'toggle',name:me,id:id});
   }
+  function trashItem(id){
+    var card=document.querySelector('.card[data-id="'+id+'"]');
+    if(!card)return;
+    var isTrashed=card.classList.contains('trashed');
+    card.classList.toggle('trashed');
+    commit({type:'trash',id:id,trashed:!isTrashed}).then(function(){reorderCards();});
+  }
   function poll(){ if(pending>0)return;
     getRemote().then(function(remote){if(pending>0)return;state=remote;setStatus(true);renderUI();},function(){setStatus(false);}); }
 
@@ -544,10 +577,21 @@
   var cancelBtn=document.getElementById('cancelAddBtn');
   var confirmBtn=document.getElementById('confirmAddBtn');
   var fetchBtn=document.getElementById('fetchBtn');
+  var imgPrevBtn=document.getElementById('imgPrevBtn');
+  var imgNextBtn=document.getElementById('imgNextBtn');
+  var imgUrls=[]; var imgIndex=0;
 
   addBtn.addEventListener('click',function(){modal.classList.add('open');});
   cancelBtn.addEventListener('click',function(){modal.classList.remove('open');clearForm();});
   modal.addEventListener('click',function(e){if(e.target===modal)modal.classList.remove('open');});
+
+  function updateImageCounter(){
+    var counter=document.getElementById('imgCounter');
+    if(imgUrls.length>1)counter.textContent=(imgIndex+1)+'/'+imgUrls.length;else counter.textContent='';
+  }
+
+  imgPrevBtn.addEventListener('click',function(e){e.preventDefault();if(imgUrls.length<2)return;imgIndex=(imgIndex-1+imgUrls.length)%imgUrls.length;document.getElementById('itemImg').value=imgUrls[imgIndex];updateImageCounter();});
+  imgNextBtn.addEventListener('click',function(e){e.preventDefault();if(imgUrls.length<2)return;imgIndex=(imgIndex+1)%imgUrls.length;document.getElementById('itemImg').value=imgUrls[imgIndex];updateImageCounter();});
 
   fetchBtn.addEventListener('click',function(){
     var url=(document.getElementById('itemUrl').value||'').trim();
@@ -558,9 +602,12 @@
       document.getElementById('itemDesc').value=data.description||'';
       document.getElementById('itemPrice').value=data.price||'';
       document.getElementById('itemTier').value=data.suggestedTier||'everyday';
-      document.getElementById('itemImg').value=data.image||'';
+      imgUrls=data.images||[];imgIndex=0;
+      if(!imgUrls.length&&data.image)imgUrls=[data.image];
+      if(imgUrls.length)document.getElementById('itemImg').value=imgUrls[0];
+      updateImageCounter();
       var preview='';
-      if(data.image)preview='<img src="'+data.image+'" style="max-height:100px">';
+      if(imgUrls[0])preview='<img src="'+imgUrls[0]+'" style="max-height:100px">';
       preview+='<p><strong>'+data.title+'</strong><br>'+data.price+' · '+data.suggestedTier+'</p>';
       document.getElementById('metaPreview').innerHTML='<div class="meta-preview">'+preview+'</div>';
     }).catch(function(e){alert('Error: '+e.message);});
@@ -575,6 +622,7 @@
     document.getElementById('itemImg').value='';
     document.getElementById('itemTier').value='everyday';
     document.getElementById('metaPreview').innerHTML='';
+    imgUrls=[];imgIndex=0;updateImageCounter();
   }
 
   confirmBtn.addEventListener('click',function(){
