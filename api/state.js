@@ -86,8 +86,6 @@ export default async function handler(req, res) {
             state.items.push(item);
           }
         });
-      } else if (type === 'reset' && req.body.secret === 'wipe-swag-9f3a-temp') {
-        state = { users: {}, picks: {}, items: [] };
       } else if (type === 'trash') {
         if (!state.items) state.items = [];
         const itemToTrash = state.items.find(i => i.id === id);
