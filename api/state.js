@@ -68,6 +68,15 @@ export default async function handler(req, res) {
       } else if (type === 'addItem') {
         if (!state.items) state.items = [];
         state.items.push(item);
+      } else if (type === 'bootstrap') {
+        if (!state.items) state.items = [];
+        const existingIds = new Set(state.items.map(i => i.id));
+        const { items } = req.body;
+        (items || []).forEach(item => {
+          if (!existingIds.has(item.id)) {
+            state.items.push(item);
+          }
+        });
       }
 
       await redisCall('SET', 'swag:state', JSON.stringify(state));

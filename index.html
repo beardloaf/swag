@@ -476,6 +476,26 @@
     if(arr.length>5){var more=document.createElement('span');more.className='tagdot more';more.textContent='+'+(arr.length-5);box.appendChild(more);}
     card.classList.toggle('picked', !!me && arr.indexOf(me)>=0);
   }
+  function renderDynamicItems(){
+    if(!state.items)return;
+    var grid=document.getElementById('grid');
+    state.items.forEach(function(item){
+      if(grid.querySelector('[data-id="'+item.id+'"]'))return;
+      var card=document.createElement('div');
+      card.className='card';
+      card.setAttribute('data-id',item.id);
+      card.setAttribute('data-tier',item.tier);
+      card.innerHTML='<span class="pill t-'+item.tier+'">'+item.tier.charAt(0).toUpperCase()+item.tier.slice(1)+'</span><span class="tags"></span>'+
+        '<div class="imgwrap"><img loading="lazy" src="'+item.image+'" alt="'+item.name+'"></div>'+
+        '<div class="cap"><span class="nm">'+item.name+'</span><span class="pr">'+item.price+'</span></div>'+
+        '<div class="overlay"><span class="vd">'+item.name+'</span><span class="nm2">'+item.name+'</span>'+
+        '<span class="why">'+item.description+'</span>'+
+        '<span class="row"><span class="cat">'+item.category+'</span><a class="view" href="'+item.url+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">View →</a></span></div>';
+      grid.appendChild(card);
+      renderCard(item.id);
+      card.addEventListener('click',function(e){if(e.target.closest('a'))return;toggle(item.id);});
+    });
+  }
   function renderAll(){document.querySelectorAll('.card').forEach(function(c){renderCard(c.getAttribute('data-id'));});}
   function renderParticipants(){
     var el=document.getElementById('participants');el.innerHTML='';
@@ -487,7 +507,7 @@
     });
   }
   function renderMe(){var md=document.getElementById('meDot');if(me){var u=state.users[me]||{i:initials(me),c:colorFor(me)};md.style.background=u.c;md.textContent=u.i;}else{md.style.background='#b4b2a9';md.textContent='';}}
-  function renderUI(){renderAll();renderParticipants();renderMe();}
+  function renderUI(){renderDynamicItems();renderAll();renderParticipants();renderMe();}
 
   function commit(body){
     pending++;
@@ -589,8 +609,40 @@
     cards.forEach(function(card){card.classList.toggle('hide', !(f==='all'||card.getAttribute('data-tier')===f));});
   });});
 
+  function bootstrap(){
+    var hardcoded=[];
+    document.querySelectorAll('#grid .card[data-id]').forEach(function(card){
+      var img=card.querySelector('img');
+      var nm=card.querySelector('.nm');
+      var pr=card.querySelector('.pr');
+      var desc=card.querySelector('.why');
+      var cat=card.querySelector('.cat');
+      var link=card.querySelector('.view');
+      hardcoded.push({
+        id:card.getAttribute('data-id'),
+        tier:card.getAttribute('data-tier'),
+        image:img?img.src:'',
+        name:nm?nm.textContent:'',
+        price:pr?pr.textContent:'',
+        description:desc?desc.textContent:'',
+        category:cat?cat.textContent:'',
+        url:link?link.href:''
+      });
+    });
+    return hardcoded;
+  }
+
   renderUI();
-  getRemote().then(function(remote){state=remote;setStatus(true);renderUI();},function(){setStatus(false);});
+  getRemote().then(function(remote){
+    state=remote;
+    if(!state.items||state.items.length===0){
+      var hardcoded=bootstrap();
+      var bootstrapPromise=postRemote({type:'bootstrap',items:hardcoded});
+      return bootstrapPromise.then(function(newstate){state=newstate;setStatus(true);renderUI();});
+    }else{
+      setStatus(true);renderUI();
+    }
+  },function(){setStatus(false);});
   setInterval(poll, 7000);
 })();
 </script>
