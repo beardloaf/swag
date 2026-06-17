@@ -15,15 +15,17 @@ export default async function handler(req, res) {
   }
 
   const redisCall = async (command, ...args) => {
+    // Upstash REST API expects the command as a raw JSON array: ["SET","key","value"]
     const response = await fetch(redisUrl, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${redisToken}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ command: [command, ...args] }),
+      body: JSON.stringify([command, ...args]),
     });
     const data = await response.json();
+    if (data.error) throw new Error('Redis error: ' + data.error);
     return data.result;
   };
 
