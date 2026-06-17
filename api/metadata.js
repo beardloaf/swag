@@ -81,7 +81,7 @@ export default async function handler(req, res) {
     push(html.match(/<link[^>]+rel=["']image_src["'][^>]+href=["']([^"']+)["']/i)?.[1]);
 
     // --- Filter out junk: icons, logos, sprites, pixels, svg, data URIs ---
-    const junk = /(sprite|icon|logo|favicon|pixel|spinner|loader|placeholder|1x1|blank|\.svg(\?|$)|\/oc-csi\/|fls-na\.amaz|data:|googletag|doubleclick|analytics|beacon)/i;
+    const junk = /(sprite|icon|logo|favicon|pixel|spinner|loader|placeholder|1x1|blank|\.svg(\?|$)|%3csvg|<svg|svg%20|\/oc-csi\/|fls-na\.amaz|data:|googletag|doubleclick|analytics|beacon)/i;
     const seen = new Set();
     const images = [];
     for (const c of candidates) {
