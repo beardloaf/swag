@@ -53,6 +53,9 @@
   .tagdot.more{background:#5f5e5a}
   .card.trashed{opacity:0.55;order:1}
   .card.trashed .cap{opacity:0.7}
+  .reveal-mode .trash-btn{display:none !important}
+  .reveal-mode .card:hover .pill{opacity:1}
+  .reveal-mode .card{cursor:default}
   .cap{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:14px 15px;
     border-top:1px solid var(--line)}
   .cap .nm{font-size:14.5px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
@@ -110,9 +113,10 @@
       <span class="dot" id="meDot"></span>
     </div>
     <div class="participants" id="participants"></div>
+    <button class="chip" id="resultsBtn">📊 Copy results link</button>
     <button class="chip" id="addItemBtn">+ Add item</button>
   </div>
-  <p class="hint">Live shared board — add your name, then click tiles to tag. Everyone's picks sync automatically; just send the link. <span id="syncStatus" style="font-weight:600"></span></p>
+  <p class="hint" id="hint">Add your name, then click tiles to tag. <strong>You only see your own picks here</strong> — use “Copy results link” to share a view where everyone’s picks are revealed. <span id="syncStatus" style="font-weight:600"></span></p>
 
   <div class="bar" id="bar">
     <button class="chip on" data-f="all">All</button>
@@ -470,6 +474,8 @@
   var state={users:{},picks:{}};
   var me=null; try{me=localStorage.getItem(ME_KEY)||null;}catch(e){}
   var pending=0; var chain=Promise.resolve();
+  // Results view: ?results (or ?reveal) shows everyone's picks. Default core page shows only your own.
+  var reveal=/[?&](results|reveal)\b/i.test(location.search);
 
   function initials(n){var p=n.trim().split(/\s+/);var s=(p[0]?p[0][0]:'')+(p[1]?p[1][0]:'');if(!p[1]&&p[0])s=p[0].slice(0,2);return s.toUpperCase();}
   function colorFor(n){var h=0;for(var i=0;i<n.length;i++){h=(h*31+n.charCodeAt(i))>>>0;}return PALETTE[h%PALETTE.length];}
@@ -506,9 +512,11 @@
     var item=state.items&&state.items.find(function(i){return i.id===id;});
     var trashed=!!(item&&item.trashed);
     var box=card.querySelector('.tags');var arr=state.picks[id]||[];box.innerHTML='';
-    arr.slice(0,5).forEach(function(n){var u=state.users[n]||{i:initials(n),c:colorFor(n)};
+    // Core page shows only your own dot; results view (?results) shows everyone's.
+    var shown=reveal?arr:arr.filter(function(n){return n===me;});
+    shown.slice(0,5).forEach(function(n){var u=state.users[n]||{i:initials(n),c:colorFor(n)};
       var d=document.createElement('span');d.className='tagdot';d.style.background=u.c;d.textContent=u.i;d.title=n;box.appendChild(d);});
-    if(arr.length>5){var more=document.createElement('span');more.className='tagdot more';more.textContent='+'+(arr.length-5);box.appendChild(more);}
+    if(shown.length>5){var more=document.createElement('span');more.className='tagdot more';more.textContent='+'+(shown.length-5);box.appendChild(more);}
     card.classList.toggle('picked', !!me && arr.indexOf(me)>=0);
     card.classList.toggle('trashed', trashed);
     var btn=ensureArchiveBtn(card,id);
@@ -555,10 +563,14 @@
   function renderAll(){document.querySelectorAll('.card').forEach(function(c){renderCard(c.getAttribute('data-id'));});}
   function renderParticipants(){
     var el=document.getElementById('participants');el.innerHTML='';
-    Object.keys(state.users).forEach(function(n){
-      var u=state.users[n];var count=0;for(var id in state.picks){if((state.picks[id]||[]).indexOf(n)>=0)count++;}
+    var names=Object.keys(state.users);
+    var countOf=function(n){var c=0;for(var id in state.picks){if((state.picks[id]||[]).indexOf(n)>=0)c++;}return c;};
+    // Results view: everyone, with pick counts, ranked. Core page: names only, no counts (don't reveal selections).
+    if(reveal)names.sort(function(a,b){return countOf(b)-countOf(a);});
+    names.forEach(function(n){
+      var u=state.users[n];
       var chip=document.createElement('span');chip.className='pchip';
-      chip.innerHTML='<span class="dot" style="background:'+u.c+'">'+u.i+'</span>'+n+' <small>'+count+'</small>';
+      chip.innerHTML='<span class="dot" style="background:'+u.c+'">'+u.i+'</span>'+n+(reveal?(' <small>'+countOf(n)+'</small>'):'');
       el.appendChild(chip);
     });
   }
@@ -579,6 +591,7 @@
     commit({type:'user',name:me});
   }
   function toggle(id){
+    if(reveal)return; // results view is read-only
     if(!me){var inp=document.getElementById('nameInput');inp.focus();inp.classList.add('flash');setTimeout(function(){inp.classList.remove('flash');},900);return;}
     ensureUser(me);
     state.picks[id]=state.picks[id]||[];var had=state.picks[id].indexOf(me)>=0;
@@ -587,6 +600,7 @@
     commit({type:'toggle',name:me,id:id});
   }
   function trashItem(id){
+    if(reveal)return; // results view is read-only
     var card=document.querySelector('.card[data-id="'+id+'"]');
     if(!card)return;
     var isTrashed=card.classList.contains('trashed');
@@ -600,6 +614,26 @@
   if(me)nameInput.value=me;
   nameInput.addEventListener('change',function(){setMe(this.value);});
   nameInput.addEventListener('keydown',function(e){if(e.key==='Enter'){setMe(this.value);this.blur();}});
+
+  // Results-link button: copies a shareable URL that reveals everyone's picks.
+  var resultsBtn=document.getElementById('resultsBtn');
+  var resultsUrl=location.origin+location.pathname+'?results';
+  resultsBtn.addEventListener('click',function(){
+    var done=function(){var t=resultsBtn.textContent;resultsBtn.textContent='✓ Copied!';setTimeout(function(){resultsBtn.textContent=t;},1500);};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(resultsUrl).then(done,function(){prompt('Copy this results link:',resultsUrl);});}
+    else{prompt('Copy this results link:',resultsUrl);}
+  });
+
+  // In results view, present it as read-only results rather than the tagging board.
+  if(reveal){
+    document.body.classList.add('reveal-mode');
+    document.querySelector('header h1').textContent='Engine Merch — Results';
+    var hint=document.getElementById('hint');
+    if(hint)hint.innerHTML='Everyone’s picks, revealed. <span id="syncStatus" style="font-weight:600"></span>';
+    resultsBtn.style.display='none';
+    var ab=document.getElementById('addItemBtn');if(ab)ab.style.display='none';
+    document.querySelector('.panel .me').style.display='none';
+  }
 
   // Modal for adding items
   var modal=document.getElementById('addItemModal');
